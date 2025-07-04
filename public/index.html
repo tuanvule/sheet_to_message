@@ -1,0 +1,220 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NHH CSVC</title>
+    <link rel="manifest" href="/manifest.json"> 
+    <link rel="icon" href="nhh512.png" type="image/png"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style/loading_box.css">
+    <link rel="stylesheet" href="style/notification.css">
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/responsive.css">
+</head>
+<body>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-messaging.js" type="module"></script>
+
+
+  <!-- hộp đăng ký nhận thông báo(notificaiton) -->
+  <div class="register_box">
+    <h1 class="title">Công cụ thông báo CSVC - NHH</h1>
+    <button id="btn-getPerm">Lấy thông tin / đăng kí thiết bị</button>
+    <div class="check_is_support">
+      <div id="support-icon"></div>
+      <div id="fcm-tok"></div>
+    </div>
+  </div>
+
+
+  <!-- render ra mấy cái thông báo nhận được -->
+  <h1 class="notification_title">Notification</h1>
+  <div class="notifications_box">
+    <ul class="notification_list">
+      <div class="notification_item">
+        <div class="notification_item_class">11A7</div>
+        <div class="notification_item_content">
+          <div class="notification_item_content-time">time state</div>
+          <div class="notification_item_content-name">ten hoc sinh</div>
+          <div class="notification_item_content-body">message</div>
+        </div>
+      </div>
+      <div class="notification_item">
+        <div class="notification_item_class">11A7</div>
+        <div class="notification_item_content">
+          <div class="notification_item_content-time">time state</div>
+          <div class="notification_item_content-name">ten hoc sinh</div>
+          <div class="notification_item_content-body">messagedsadas fa;tr hspohegodshasdasfasgasdgadgasdf[ousd f[iay[g ya[idgf [adg[sdzdgf</div>
+        </div>
+      </div>
+      <div class="notification_item">
+        <div class="notification_item_class">11A7</div>
+        <div class="notification_item_content">
+          <div class="notification_item_content-time">time state</div>
+          <div class="notification_item_content-name">ten hoc sinh</div>
+          <div class="notification_item_content-body">message</div>
+        </div>
+      </div>
+    </ul>
+  </div>
+
+
+  <!-- 
+    - hiển thị loading khi yêu cầu lấy token từ server 
+    - vào style/loading_box.css
+    - tại class .loading_box cho display = block để hiển thị 
+  -->
+  <div class="loading_box">
+    <div class="loading_box_main">
+      <div class="loading_box_exit"><i class="fa-solid fa-x"></i></div>
+
+      <div class="loading_box_result loading">
+        <div class="loader"></div>
+        <div class="success"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="fail"><i class="fa-solid fa-circle-xmark"></i></div>
+      </div>
+
+      <h2 class="loading_box_message">Get Perm successfully</h2>
+      <h3 class="token_show"> 
+        <div class="token_show_title">Your token is:</div>
+        <div class="token_show_token"></div>
+      </h3>
+    </div>
+  </div>
+  
+  <!-- <p>New version</p> -->
+</body>
+<script type="module" src="script/renderFormRequest.js"></script>
+<script type="module" src="main.js"></script>
+
+<script type="module">
+  import { initializeApp  } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+  import { getMessaging, getToken, onMessage, isSupported} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-messaging.js"
+  import { GetPermHandler } from "./script/getPermHandler.js"
+  const get_perm_handler = new GetPermHandler();
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhL7Gbr1ZqG0j1KOmMUUJtCN7byc669ss",
+    authDomain: "csvcnhh.firebaseapp.com",
+    projectId: "csvcnhh",
+    storageBucket: "csvcnhh.firebasestorage.app",
+    messagingSenderId: "682386956230",
+    appId: "1:682386956230:web:9e048fd94c8fbbbcb05cc7"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+  async function sendTokenToServer(token) {
+    try {
+        const response = await fetch('/register-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token })
+        });
+        const data = await response.json();
+        get_perm_handler.Success()
+        get_perm_handler.Show_token(token)
+        console.log('Token registered:', data);
+    } catch (error) {
+        console.error('Error registering token:', error);
+        get_perm_handler.Fail()
+    }
+}
+
+(async() => {
+  let issup = await isSupported();
+  const fcmElement = document.getElementById('fcm-tok');
+  const iconElement = document.getElementById('support-icon');
+  function isIos() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  function isSafari() {
+    return /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent);
+  }
+  function isInStandaloneMode() {
+    return window.matchMedia('(display-mode: standalone)').matches;
+  }
+  if(isIos() && !issup){
+    fcmElement.innerHTML = `
+      <div class="support-message support-no"> 
+        Ghi nhận thiết bị đang truy cập là iOS (iPhone, iPad). Xin vui lòng cài đặt ứng dụng ở chế độ PWA (Chia sẻ -> Thêm vào màn hình chính [Add to Home Screen])
+      </div>
+    `;
+    iconElement.innerHTML = '<i class="fa-solid fa-xmark cross-icon"></i>';
+    document.querySelector('.check_is_support').classList.add('not-supported');
+  }else{
+    if(issup) {
+      fcmElement.innerHTML = `
+        <div class="support-message support-yes"> 
+          Đây là thiết bị được hỗ trợ đầy đủ các tính năng. Hãy sử dụng "Lấy thông tin thiết bị" để lấy dữ liệu
+        </div>
+      `;
+      iconElement.innerHTML = '<i class="fa-solid fa-check check-icon"></i>';
+      document.querySelector('.check_is_support').classList.add('supported');
+    } else {
+      fcmElement.innerHTML = `
+        <div class="support-message support-no"> 
+          Thiết bị này không được hỗ trợ đầy đủ các tính năng. Xin tham khảo thêm "Tài liệu hướng dẫn"
+        </div>
+      `;
+      iconElement.innerHTML = '<i class="fa-solid fa-xmark cross-icon"></i>';
+      document.querySelector('.check_is_support').classList.add('not-supported');
+    }
+}
+})();
+  document.getElementById('fcm-tok').innerText = `Đang chờ kiểm định thiết bị`;
+
+  document.getElementById("btn-getPerm").addEventListener("click", async (e)=> {
+    // e.preventDefault()
+    Notification.requestPermission().then(async (permission) => {
+      get_perm_handler.Loading()
+      if (permission === 'granted') {
+           
+            console.log('Notification permission granted.');
+            const token = await getToken(messaging,{
+                vapidKey: 'BIkFyecCRIPZhZdynwDFni7NpX9Xm5tmx3rqaMMJhGfx29zcuo0q2qY5OhHCV7mQtS1egWywxXU1sr47gvHDjtg'
+            });
+            console.log('FCM Token:', token);
+            document.querySelector('.token_show_token').innerText = `${token}`;
+
+            //send token back to server
+            sendTokenToServer(token)
+
+        }else{
+          console.log("tes")
+          get_perm_handler.Show_token("Thiếu quyền cấp phép tính năng thông báo")
+          get_perm_handler.Fail()
+            // arlet("Hệ thống không được hỗ trợ nếu không được cấp quyền thông báo, xin hãy bật quyền")
+        }
+
+    })
+  })
+  document.querySelector(".loading_box_exit").addEventListener("click", async (e)=> {
+    // e.preventDefault()
+    get_perm_handler.Exit()
+  })
+
+// Add this after initializing messaging
+onMessage(messaging, (payload) => {
+  console.log('Message received in foreground:', payload);
+  
+  // Display notification manually when app is in foreground
+  if (Notification.permission === 'granted') {
+    const notificationTitle = payload.notification.title || 'New Message';
+    const notificationOptions = {
+      body: payload.notification?.body || '',
+      icon: '/nhh512.png' // Use your icon
+    };
+    
+    new Notification(notificationTitle, notificationOptions);
+  }
+});
+
+</script>
+</html>

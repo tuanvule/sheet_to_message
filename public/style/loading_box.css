@@ -1,0 +1,99 @@
+.loading_box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    /* opacity: 0.3; */
+    display: block;
+    place-content: center;
+}
+
+.loading_box_main {
+    position: relative;
+    width: fit-content;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow:  -2px 2px 10px #d3d3d3,
+            2px -2px 10px #ededed;
+    max-width: 30%;
+    min-width: 400px;
+    margin: auto;
+}
+
+.loading_box_exit {
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    color: var(--primary-text-color);
+    width: 30px;
+    height: 30px;
+    border-radius: 100000px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+}
+
+.loading_box_exit:hover {
+    color: #6d7d96;
+    background-color: #d7e0ef;
+}
+
+.loading_box_result {
+    margin: 2rem auto;
+    width: fit-content;
+}
+
+.loading_box_result.loading .loader {
+  border: 8px solid #f3f3f3;       /* Màu viền nền */
+  border-top: 8px solid #3498db;   /* Màu viền quay */
+  border-radius: 50%;              /* Tạo hình tròn */
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite; /* Animation quay */
+}
+
+.success i {
+    display: none;
+}
+
+.fail i {
+    display: none;
+}
+
+.loading_box_result.success .success i {
+    display: block;
+    font-size: 4rem;
+    color: rgb(0, 189, 0);
+}
+
+.loading_box_result.fail .fail i {
+    display: block;
+    font-size: 4rem;
+    color: rgb(193, 42, 22);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading_box_message {
+    color: var(--primary-text-color);
+    font-weight: 700;
+    font-size: 1.4rem;
+    padding: 10px 20px;
+}
+
+.token_show_title {
+    color: var(--primary-text-color);
+}
+
+.token_show_token {
+    word-break: break-all;     
+    width: 100%;
+    white-space: normal; 
+}
