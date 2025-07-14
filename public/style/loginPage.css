@@ -1,0 +1,419 @@
+/* Reset CSS cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+/* Thiết lập font và nền */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.navigator {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px;
+}
+
+.home_page_btn {
+    width: 100px;
+    height: 40px;
+    display: grid;
+    place-content: center;
+    margin: 0 4px;
+    cursor: pointer;
+}
+
+/* Container chính - Layout 2 cột */
+.container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 600px;
+    display: flex;
+}
+
+/* Bên trái - Hình ảnh */
+.left-section {
+    flex: 1;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Thêm hiệu ứng background animated */
+.left-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+/* Thêm hiệu ứng glow cho container */
+.image-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(33, 150, 243, 0.1) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.image-container:hover::after {
+    opacity: 1;
+}
+
+.character-image {
+    width: 100%;
+    height: 100%;
+    max-width: 420px;
+    max-height: 420px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    object-fit: contain;
+    background: white;
+    padding: 30px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+/* Hiệu ứng hover cho hình ảnh */
+.character-image:hover {
+    transform: scale(1.08) rotate(2deg);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    border-radius: 25px;
+}
+
+/* Hiệu ứng nhấp nháy nhẹ */
+.character-image:active {
+    transform: scale(1.02) rotate(1deg);
+    transition: all 0.1s ease;
+}
+
+/* Bên phải - Form */
+.right-section {
+    flex: 1;
+    padding: 60px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Header form */
+.form-header {
+    text-align: left;
+    margin-bottom: 40px;
+}
+
+.form-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.form-header p {
+    font-size: 16px;
+    color: #666;
+    font-weight: 400;
+}
+
+/* Form sections */
+.form-section {
+    display: none;
+}
+
+.form-section.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.required-star {
+    color: #ff4757;
+    margin-right: 4px;
+}
+
+/* Input styling */
+.form-group input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2196f3;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #999;
+}
+
+/* Password input với nút show/hide */
+.password-input {
+    position: relative;
+}
+
+.password-input input {
+    padding-right: 50px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: #2196f3;
+    background: rgba(33, 150, 243, 0.1);
+}
+
+/* Buttons */
+.btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 16px;
+}
+
+.btn-submit:hover {
+    background: #1976d2;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    color: #666;
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    border-color: #2196f3;
+    color: #2196f3;
+    background: rgba(33, 150, 243, 0.05);
+}
+
+/* Form footer */
+.form-footer {
+    text-align: center;
+    margin-top: 24px;
+}
+
+/* Error messages */
+.error-message {
+    color: #ff4757;
+    font-size: 14px;
+    margin-top: 6px;
+    display: none;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        max-width: 500px;
+    }
+    
+    .left-section {
+        padding: 30px;
+        min-height: 300px;
+    }
+    
+    .character-image {
+        max-width: 280px;
+        max-height: 280px;
+        padding: 20px;
+    }
+    
+    .character-image:hover {
+        transform: scale(1.05) rotate(1deg);
+    }
+    
+    .right-section {
+        padding: 40px 30px;
+    }
+    
+    .form-header h1 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .right-section {
+        padding: 30px 20px;
+    }
+    
+    .form-header h1 {
+        font-size: 24px;
+    }
+    
+    .form-group input {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+    
+    .btn-submit,
+    .btn-secondary {
+        padding: 14px;
+        font-size: 16px;
+    }
+}
+
+/* Loading animation cho nút */
+.btn-submit.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.btn-submit.loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hiệu ứng cho input khi có lỗi */
+.form-group input.error {
+    border-color: #ff4757;
+    background: #fff5f5;
+}
+
+/* Success state */
+.form-group input.success {
+    border-color: #2ed573;
+    background: #f0fff4;
+}

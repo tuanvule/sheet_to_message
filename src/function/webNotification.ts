@@ -6,8 +6,8 @@ export class WebNotification extends Subscriber {
     async checkValidNotification(content: any) {
         
     }
-
-    async update(content: any): Promise<void> {
+    
+    async update(content: any, userName: string): Promise<void> {
         let firebase = FirebaseAdminControler.getInstance();
         const tokenCollection = await firebase.getCollection("client_token");
         interface TokenItem {

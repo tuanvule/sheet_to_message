@@ -158,6 +158,27 @@ export class FirebaseAdminControler {
     }
   }
 
+  public async deleteMultiDocument(collection: string, docIds: string[]): Promise<void> {
+    this.checkInitialization();
+    const chunkSize = 500;
+    
+    try {
+      for (let i = 0; i < docIds.length; i += chunkSize) {
+        const chunk = docIds.slice(i, i + chunkSize);
+
+        await this.runBatch((batch) => {
+          for (const id of chunk) {
+            const ref = this.db!.collection(collection).doc(id);
+            batch.delete(ref);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      throw new Error("Failed to delete multiple document");
+    }
+  }
+
   /**
    * Get a single document from Firestore
    */
@@ -171,7 +192,7 @@ export class FirebaseAdminControler {
         return null;
       }
 
-      return { id: docSnap.id, ...docSnap.data() } as T;
+      return { ...docSnap.data(), id: docSnap.id } as T;
     } catch (error) {
       console.error("Error getting document:", error);
       throw new Error("Failed to get document");

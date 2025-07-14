@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - Hệ Thống</title>
+    <!-- Liên kết file CSS -->
+    <link rel="stylesheet" href="./style/loginPage.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Bên trái - Hình ảnh -->
+        <div class="left-section">
+            <div class="image-container">
+                <!-- Hình ảnh tự động từ folder images -->
+                <img id="characterImage" alt="Logo/Hình ảnh" class="character-image">
+            </div>
+        </div>
+
+        <!-- Bên phải - Form đăng nhập -->
+        <div class="right-section">
+            <div class="form-container">
+                <!-- Form đăng nhập -->
+                <div id="loginForm" class="form-section active">
+                    <div class="form-header">
+                        <h1>Đăng Nhập</h1>
+                    </div>
+
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="loginEmail">
+                                <span class="required-star">*</span> Email
+                            </label>
+                            <input type="email" id="loginEmail" name="email" placeholder="Nhập email của bạn" required>
+                            <div class="error-message" id="loginEmailError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="loginPassword">
+                                <span class="required-star">*</span> Mật khẩu
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="loginPassword" name="password" placeholder="Nhập mật khẩu" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+                                    👁️
+                                </button>
+                            </div>
+                            <div class="error-message" id="loginPasswordError"></div>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Đăng Nhập</button>
+                    </form>
+
+                    <div class="form-footer">
+                        <button class="btn-secondary" onclick="showSignup()">Tạo tài khoản mới</button>
+                    </div>
+                </div>
+
+                <!-- Form đăng ký -->
+                <div id="signupForm" class="form-section">
+                    <div class="form-header">
+                        <h1>Đăng Ký</h1>
+                        <p>Tạo tài khoản của bạn.</p>
+                    </div>
+
+                    <form onsubmit="handleSignup(event)">
+                        <div class="form-group">
+                            <label for="signupName">
+                                <span class="required-star">*</span> Họ và tên
+                            </label>
+                            <input type="text" id="signupName" name="name" placeholder="Nhập họ và tên" required>
+                            <div class="error-message" id="signupNameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupEmail">
+                                <span class="required-star">*</span> Email
+                            </label>
+                            <input type="email" id="signupEmail" name="email" placeholder="Nhập email của bạn" required>
+                            <div class="error-message" id="signupEmailError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupPassword">
+                                <span class="required-star">*</span> Mật khẩu
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="signupPassword" name="password" placeholder="Nhập mật khẩu" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('signupPassword')">
+                                    👁️
+                                </button>
+                            </div>
+                            <div class="error-message" id="signupPasswordError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">
+                                <span class="required-star">*</span> Xác nhận mật khẩu
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                                    👁️
+                                </button>
+                            </div>
+                            <div class="error-message" id="confirmPasswordError"></div>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Đăng Ký</button>
+                    </form>
+
+                    <div class="form-footer">
+                        <button class="btn-secondary" onclick="showLogin()">Quay lại đăng nhập</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigator">
+        <div class="home_page_btn"><a href="/public/index.html">Home</a></div>
+    </div>
+
+    <!-- Liên kết file JavaScript -->
+    <script src="./script/loginPage/loginHandler.js"></script>
+</body>
+</html>

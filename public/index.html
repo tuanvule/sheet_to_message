@@ -17,7 +17,6 @@
   <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js" type="module"></script>
   <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-messaging.js" type="module"></script>
 
-
   <!-- hộp đăng ký nhận thông báo(notificaiton) -->
   <div class="register_box">
     <h1 class="title">Công cụ thông báo CSVC - NHH</h1>
@@ -41,6 +40,7 @@
           <div class="notification_item_content-body">message</div>
         </div>
       </div>
+
       <div class="notification_item">
         <div class="notification_item_class">11A7</div>
         <div class="notification_item_content">
@@ -49,6 +49,7 @@
           <div class="notification_item_content-body">messagedsadas fa;tr hspohegodshasdasfasgasdgadgasdf[ousd f[iay[g ya[idgf [adg[sdzdgf</div>
         </div>
       </div>
+
       <div class="notification_item">
         <div class="notification_item_class">11A7</div>
         <div class="notification_item_content">
@@ -59,7 +60,6 @@
       </div>
     </ul>
   </div>
-
 
   <!-- 
     - hiển thị loading khi yêu cầu lấy token từ server 
@@ -84,7 +84,13 @@
     </div>
   </div>
   
-  <!-- <p>New version</p> -->
+  <div class="login_form"></div>
+
+  <div class="navigator">
+    <div class="admin_pagge_btn"><a href="/public/admin.html">Admin</a></div>
+    <div class="login_btn"><a href="/public/login.html">Login</a></div>
+  </div>
+
 </body>
 <script type="module" src="script/renderFormRequest.js"></script>
 <script type="module" src="main.js"></script>
@@ -211,7 +217,6 @@ onMessage(messaging, (payload) => {
       body: payload.notification?.body || '',
       icon: '/nhh512.png' // Use your icon
     };
-    
     new Notification(notificationTitle, notificationOptions);
   }
 });

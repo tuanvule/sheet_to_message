@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tin nhắn dynamic field</title>
+  <link rel="stylesheet" href="/public/style/adminPage.css">
+</head>
+<body>
+  
+  <div class="template-container">
+    <div class="side_bar">
+      <h2 class="side_bar-account_name">NHH</h2>
+      <h3>Form</h3>
+      <ul class="form_list">
+        <!-- <li class="form_item selected">Dashboard</li>
+        <li class="form_item ">form 2</li>
+        <li class="form_item ">form 3</li> -->
+      </ul>
+      <button>➕ Thêm Form</button>
+    </div>
+
+    <h2>Tùy chỉnh hiển thị tin nhắn</h2>
+    <div class="sheet_connect_box" id="sheet-connect" style="background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;">
+      <h3>Kết nối Google Sheet</h3>
+      <input type="text" id="sheet-id" placeholder="Spreadsheet ID" style="padding:8px; width:200px;">
+      <input type="text" id="sheet-name" placeholder="Sheet name" style="padding:8px; width:150px;">
+      <button class="fetch_header_btn">Lấy header</button>
+    </div>
+    <!-- <h3>Dynamic Fields Template</h3> -->
+
+    <div style="background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;">
+      <label>Headers (cột) từ Google Sheet (nhập thủ công demo):</label><br>
+      <input type="text" id="header-input" placeholder="VD: Họ tên">
+      <button class="add_header_btn" onclick="addHeader()">Thêm header</button>
+    </div>
+
+    <div class="fixed-header-settings">
+      <h4>Tuỳ chỉnh header phần cố định</h4>
+      <div class="fixed-setting-item">
+        <label>Header Họ tên</label>
+        <select id="fixed-ho-ten-header"></select>
+      </div>
+      <div class="fixed-setting-item">
+        <label>Header Hạng mục</label>
+        <select id="fixed-hang-muc-header"></select>
+      </div>
+    </div>
+
+    <hr>
+
+    <button class="add-field">➕ Thêm field</button>
+    <div id="fields-area"></div>
+
+    <button class="show-message">Hiển thị tin nhắn mẫu</button>
+
+    <div id="message-display">
+      <!-- <div class="message-box">
+        <div class="fixed-item">
+          <div class="fixed-label name">Họ tên</div>
+          <div class="fixed-label">Hạng mục</div>
+        </div>
+        <div class="message-content_list hidden">
+
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <div class="navigator">
+    <div class="home_page_btn"><a href="/public/index.html">Home</a></div>
+  </div>
+
+  <!-- SortableJS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script>// Enable drag & drop sorting
+    new Sortable(document.getElementById('fields-area'), {
+        animation: 150
+    });
+  </script>
+  <script type="module" src="/public/script/adminPage/configMessageController.js"></script>
+  <script type="module" src="/public/script/adminPage/formController.js"></script>
+  <script type="module" src="/public/script/adminPage/adminPageHandler.js"></script>
+
+</body>
+</html>

@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "../main.js";
+
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
@@ -13,8 +15,8 @@ export class RenderFormRequest {
 
     async init() {
         try {
-            const request = await fetch("http://127.0.0.1:3092/get-form-request");
-            const data = await request.json();
+            const res = await fetchWithAuth("http://127.0.0.1:3092/get-form-request");
+            const data = await res.json();
             this.data = data;
             this.showed_data = data;
         } catch(err) {

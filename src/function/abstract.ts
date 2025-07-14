@@ -1,6 +1,6 @@
 
 export abstract class Subscriber {
-    abstract update(data: any): void;
+    abstract update(data: any, userName: string): void;
 }
 
 export class Publisher {
@@ -11,9 +11,9 @@ export class Publisher {
     removeSubscriber(subscriber: Subscriber): void {
         this.subscribers = this.subscribers.filter(sub => sub !== subscriber);
     }
-    public notifySubscribers(data: any): void {
+    public notifySubscribers(data: any, userName: string): void {
         for (const subscriber of this.subscribers) {
-            subscriber.update(data);
+            subscriber.update(data, userName);
         }
     }
 }

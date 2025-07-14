@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/function/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "src/function/**"
+        ]
+      }
+    },
+    {
+      "src": "public/**", 
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    
+    {
+      "src": "/api/(.*)",
+      "dest": "src/function/index.ts"
+    },
+    
+    {
+      "src": "/(.*)",
+      "dest": "public/$1"
+    }
+  ],
+  "outputDirectory": "dist" 
+}
