@@ -20,7 +20,7 @@ export async function fetchWithAuth(url, options = { method: "GET"}) {
 
   if (res.status === 401) {
     // 🔑 Token expired, call refresh
-    const refreshRes = await fetch("/refresh_token", {
+    const refreshRes = await fetch("/api/refresh_token", {
       method: "POST",
       credentials: "include"
     });
@@ -44,6 +44,6 @@ export async function fetchWithAuth(url, options = { method: "GET"}) {
 
 
 
-const session = await fetchWithAuth("http://127.0.0.1:3092/get_sessionId")
+const session = await fetchWithAuth("/api/get_sessionId")
 
 console.log()

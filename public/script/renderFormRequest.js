@@ -15,7 +15,7 @@ export class RenderFormRequest {
 
     async init() {
         try {
-            const res = await fetchWithAuth("http://127.0.0.1:3092/get-form-request");
+            const res = await fetchWithAuth("/api/get-form-request");
             const data = await res.json();
             this.data = data;
             this.showed_data = data;

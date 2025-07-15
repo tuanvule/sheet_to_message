@@ -114,7 +114,7 @@ function handleLogin(event) {
         submitBtn.classList.add('loading');
         
         // Simulate API call
-        fetch("http://127.0.0.1:3092/login", {
+        fetch("/api/login", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -220,7 +220,7 @@ function handleSignup(event) {
         // Show loading
         submitBtn.classList.add('loading');
         
-        fetch("http://127.0.0.1:3092/signup", {
+        fetch("/api/signup", {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'

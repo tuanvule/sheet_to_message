@@ -11,7 +11,7 @@ export const formController = {
     current_form_index: 0,
 
     async Init() {
-        const res = await fetchWithAuth("http://127.0.0.1:3092/get_account")
+        const res = await fetchWithAuth("/api/get_account")
         const data = await res.json()
         this.form_datas = data.forms
         this.current_form = this.form_datas[this.current_form_index]
