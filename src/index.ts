@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
 app.use(cors({
-  origin: "http://127.0.0.1:5500", // frontend origin
+  origin: "https://sheet-to-message.vercel.app", // frontend origin
   credentials: true
 }));
 app.use(cookieParser());
@@ -53,11 +53,11 @@ const JWTAuth = (req: Request, res: Response, next: NextFunction) => {
   });
 }
 
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
-app.post('/register-token', async (req, res) => {
+app.post('/api/register-token', async (req, res) => {
     const { token } = req.body;
     // fdb.collection("client_token").add({token: token})
 
@@ -69,13 +69,13 @@ app.post('/register-token', async (req, res) => {
 });
 
 
-app.get('/get-list-token', async (req, res) => {
+app.get('/api/get-list-token', async (req, res) => {
     let firebase = FirebaseAdminControler.getInstance()
     console.log(await firebase.getCollection("client_token"))
     res.send("ok")
 });
 
-app.post('/webhook/:userName', async (req, res) => {
+app.post('/api/webhook/:userName', async (req, res) => {
   try {
     const userName: string = req.params.userName;
     let {type , info, formId} = req.body as any;
@@ -100,7 +100,7 @@ app.post('/webhook/:userName', async (req, res) => {
   }
 });
 
-app.get('/get-form-request', JWTAuth, async (req, res) => {
+app.get('/api/get-form-request', JWTAuth, async (req, res) => {
   const firebase = FirebaseAdminControler.getInstance()
 
   // const sessionId: string = req.cookies.sessionId;
@@ -135,7 +135,7 @@ app.get('/get-form-request', JWTAuth, async (req, res) => {
   })
 });
 
-app.get("/get_sessionId", (req, res) => {
+app.get("/api/get_sessionId", (req, res) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) return res.status(401).json({ error: "No token provided" });
@@ -151,7 +151,7 @@ app.get("/get_sessionId", (req, res) => {
   });
 })
 
-app.post('/login', async (req,res) => {
+app.post('/api/login', async (req,res) => {
   try {
     const { email, password } = req.body;
     let status:Status;
@@ -179,7 +179,7 @@ app.post('/login', async (req,res) => {
   }
 })
 
-app.post('/logout', async (req,res) => {
+app.post('/api/logout', async (req,res) => {
   const sessionId = req.cookies.sessionId;
   if (sessionId) {
     const firebase = FirebaseAdminControler.getInstance();
@@ -194,7 +194,7 @@ app.post('/logout', async (req,res) => {
   res.json({ message: "Logged out" });
 })
 
-app.post('/signup', async (req,res) => {
+app.post('/api/signup', async (req,res) => {
   try {
     const { userName, email, password } = req.body;
     let status:Status;
@@ -208,7 +208,7 @@ app.post('/signup', async (req,res) => {
   }
 })
 
-// app.get('/handle-session-state', async (req,res) => {
+// app.get('/api/handle-session-state', async (req,res) => {
 //   try {
 //     const sessionId = req.cookies.sessionId;
 //     if(!sessionId) return res.status(401).json({ message: "Not logged in or session exprired" });
@@ -231,7 +231,7 @@ app.post('/signup', async (req,res) => {
 //   }
 // })
 
-app.get('/get_account', JWTAuth, async (req,res) => {
+app.get('/api/get_account', JWTAuth, async (req,res) => {
   try {
     // const sessionId = req.cookies.sessionId;
     // if(!sessionId) return res.status(401).json({ message: "Not logged in or session exprired" });
