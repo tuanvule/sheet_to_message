@@ -102,7 +102,7 @@ export class FirebaseAdminControler {
                                 .where(uniqueField, "==", data[uniqueField])
                                 .get();
 
-      // console.log(querySnapshot.empty)
+      console.log(querySnapshot.empty)
       if(!querySnapshot.empty) return querySnapshot.docs[0].id;
       const docRef = await this.db!.collection(collection).add({
         ...data
