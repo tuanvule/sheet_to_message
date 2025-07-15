@@ -53,9 +53,9 @@ const JWTAuth = (req: Request, res: Response, next: NextFunction) => {
   });
 }
 
-app.get('/api/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../public', 'index.html'));
+// });
 
 app.post('/api/register-token', async (req, res) => {
     const { token } = req.body;
