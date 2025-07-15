@@ -63,7 +63,13 @@ app.post('/api/register-token', async (req, res) => {
 
     let firebase = FirebaseAdminControler.getInstance();
     // firebase.createDocument("client_token",{token})
-    await firebase.createDocumentIfNotExists("client_token",{token},"token");
+    firebase.createDocumentIfNotExists("client_token",{token},"token")
+    .then(() => {
+      console.log("Document created in background for token:", token);
+    })
+    .catch((error) => {
+      console.error("Error creating document in background for token:", token, error);
+    });
     console.log("newTOKEN",token);
     res.json({ message: 'Token registered successfully' });
 });
