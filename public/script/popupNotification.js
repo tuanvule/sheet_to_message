@@ -268,7 +268,7 @@ export const popupNotification = {
                 this.Fail()
                 break
             case "loading":
-                this.Loading()
+                this.Loading("Get Perm ...")
                 break
             case "failWithNoNotifiPerm":
                 this.Fail()
@@ -311,7 +311,7 @@ export const popupNotification = {
     },
 
     Show_token(token) {
-        token_show_token.innerHTML = token
+        this.token_show_token.innerHTML = token
     },
 
     Exit() {
