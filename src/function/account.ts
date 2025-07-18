@@ -6,6 +6,7 @@ export interface Status {
     isSuccess: boolean,
     userId: string,
     role: string,
+    userName: string,
 }
 
 interface StoredForm {
@@ -53,12 +54,12 @@ export class AccountHandler {
             );
             
             // check if account is not exit
-            if(accounts.length === 0) return { isSuccess: false, userId: "", role: ""}
+            if(accounts.length === 0) return { isSuccess: false, userId: "", role: "", userName: ""}
 
             const account: StoredAccount = accounts[0];
             // const sessionId = await sessionController.CreateSession(account.id, "member");
 
-            return { isSuccess: true, userId: account.id, role: "admin" };
+            return { isSuccess: true, userId: account.id, role: "admin", userName };
 
         } catch(err) {
             console.log("login err: ", err);
@@ -76,12 +77,12 @@ export class AccountHandler {
             );
             
             // check if account is not exit
-            if(accounts.length === 0) return { isSuccess: false, userId: "", role: ""}
+            if(accounts.length === 0) return { isSuccess: false, userId: "", role: "", userName: ""}
 
             const account: StoredAccount = accounts[0];
             // const sessionId = await sessionController.CreateSession(account.id, "admin");
 
-            return { isSuccess: true, userId: account.id, role: "admin" };
+            return { isSuccess: true, userId: account.id, role: "admin", userName: account.userName };
         } catch(err) {
             console.log("login err: ", err);
             throw err;

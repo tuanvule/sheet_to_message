@@ -56,13 +56,17 @@ app.get('/api/', (req, res) => {
     res.json({message: "twt"})
 });
 
-app.post('/api/register-token', async (req, res) => {
+app.post('/api/register-token', JWTAuth, async (req, res) => {
     const { token } = req.body;
     // fdb.collection("client_token").add({token: token})
 
+    const userState = res.locals.userState
     let firebase = FirebaseAdminControler.getInstance();
     // firebase.createDocument("client_token",{token})
-    await firebase.createDocumentIfNotExists("client_token",{token},"token");
+    await firebase.createDocumentIfNotExists("client_token",{
+      token,
+      userName: userState.userName
+    },"token");
     console.log("newTOKEN",token);
     res.json({ message: 'Token registered successfully' });
 });

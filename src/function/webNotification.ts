@@ -9,7 +9,7 @@ export class WebNotification extends Subscriber {
     
     async update(content: any, userName: string): Promise<void> {
         let firebase = FirebaseAdminControler.getInstance();
-        const tokenCollection = await firebase.getCollection("client_token");
+        const tokenCollection = await firebase.queryDocuments("client_token", ref => ref.where("userName", "==", userName));
         interface TokenItem {
             token: string;
         }
