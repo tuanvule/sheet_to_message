@@ -24,9 +24,8 @@ const PORT = process.env.PORT || 3092;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors());
 app.use(cors({
-  origin: "https://sheet-to-message.vercel.app", // frontend origin
+  origin: ["https://sheet-to-message.vercel.app","http://127.0.0.1:5500"], // frontend origin
   credentials: true
 }));
 app.use(cookieParser());
@@ -63,13 +62,7 @@ app.post('/api/register-token', async (req, res) => {
 
     let firebase = FirebaseAdminControler.getInstance();
     // firebase.createDocument("client_token",{token})
-    firebase.createDocumentIfNotExists("client_token",{token},"token")
-    .then(() => {
-      console.log("Document created in background for token:", token);
-    })
-    .catch((error) => {
-      console.error("Error creating document in background for token:", token, error);
-    });
+    await firebase.createDocumentIfNotExists("client_token",{token},"token");
     console.log("newTOKEN",token);
     res.json({ message: 'Token registered successfully' });
 });
@@ -90,14 +83,6 @@ app.post('/api/webhook/:userName', async (req, res) => {
     }
 
     await formSubmitHandler.handleSubmit(info, userName, formId);
-
-    console.log(info)
-    // if(type == "SP") {
-    //   formSubmitHandler.handleCSVCSubmit(info, userName);
-    // }
-    // else if(type == "NSP") {
-    //   formSubmitHandler.handleStudentSubmit(info, userName);
-    // }
     
     res.send("ok");
   } catch(err) {
@@ -108,11 +93,6 @@ app.post('/api/webhook/:userName', async (req, res) => {
 
 app.get('/api/get-form-request', JWTAuth, async (req, res) => {
   const firebase = FirebaseAdminControler.getInstance()
-
-  // const sessionId: string = req.cookies.sessionId;
-  // if(!sessionId) return res.status(401).json({ message: "Not logged in or session exprired" });
-
-  // const userSessionState: SessionState | null = await sessionController.GetSessionState(sessionId);
   const userState = res.locals.userState;
 
   if(userState.userId) {
@@ -140,22 +120,6 @@ app.get('/api/get-form-request', JWTAuth, async (req, res) => {
     student: studentRequestData,
   })
 });
-
-app.get("/api/get_sessionId", (req, res) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) return res.status(401).json({ error: "No token provided" });
-
-  const token = authHeader.split(" ")[1];
-  const JWT_SECRET = process.env.JWT_SECRET
-  if(!JWT_SECRET) return res.json({mess: "err"})
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ error: "Invalid token" });
-
-    // ✅ Lưu user info vào req.user
-    res.json({state: decoded})
-  });
-})
 
 app.post('/api/login', async (req,res) => {
   try {
@@ -214,40 +178,9 @@ app.post('/api/signup', async (req,res) => {
   }
 })
 
-// app.get('/api/handle-session-state', async (req,res) => {
-//   try {
-//     const sessionId = req.cookies.sessionId;
-//     if(!sessionId) return res.status(401).json({ message: "Not logged in or session exprired" });
-
-//     const sessionState = await sessionController.GetSessionState(sessionId)
-
-//     if(sessionState) {
-//       res.cookie("sessionState", sessionState, {
-//         httpOnly: true,
-//         secure: false, // true khi deploy HTTPS
-//         sameSite: "strict",
-//         maxAge: 30 * 24 * 60 * 60 * 1000 // 30 day
-//       });
-//     }
-//     res.json({message: "GET session state successfully"})
-//   }
-//   catch(err) {
-//     console.error("unvalid session state request: ",err)
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// })
 
 app.get('/api/get_account', JWTAuth, async (req,res) => {
   try {
-    // const sessionId = req.cookies.sessionId;
-    // if(!sessionId) return res.status(401).json({ message: "Not logged in or session exprired" });
-    
-    // const sessionState = await sessionController.GetSessionState(sessionId)
-    // if(!sessionState) return res.status(401).json({ message: "cannot find session state" });
-    
-    // const account = await accountHandler.GetAccount(sessionState.userId);
-    
-    
     const userId = res.locals.userState.userId;
     console.log(res.locals.userState)
     const account = await accountHandler.GetAccount(userId);
@@ -258,7 +191,39 @@ app.get('/api/get_account', JWTAuth, async (req,res) => {
   }
   catch(err) {
     console.error("unvalid session state request: ",err)
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: err });
+  }
+})
+
+app.post("/api/create_new_form", JWTAuth, async (req,res) => {
+  const userState = res.locals.userState
+  if(userState.role === "admin") {
+    try {
+      const response = await accountHandler.CreateForm(userState.userId)
+      res.json({newForm: response})
+      // throw new Error
+    } catch(err) {
+      res.status(500).json({message: "international server error"})
+    }
+  } else {
+    res.status(403).json({message: "user must be owner to do this"})
+  }
+})
+
+app.post("/api/save_form_config", JWTAuth, async (req,res) => {
+  try {
+    const userState = res.locals.userState
+    if(userState.role === "admin") {
+      console.log(req.body)
+      const { formId,changeData} = req.body
+      await accountHandler.SaveFormConfig(userState.userId, formId, changeData)
+      res.status(200).json()
+    } else {
+      res.status(403).json({message: "user must be owner to do this"})
+    }
+  } catch(err) {
+    console.error(err)
+    res.status(500).json({message: "internationcal error"})
   }
 })
 

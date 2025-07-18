@@ -17,6 +17,10 @@ h2, h3 {
   color: #444;
 }
 
+.warper {
+  background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;
+}
+
 .navigator {
     position: fixed;
     top: 1rem;
@@ -198,7 +202,7 @@ h2, h3 {
 }
 
 
-#header-input {
+#header-input, .form_info_name {
   padding: 10px;
   width: calc(100% - 130px);
   max-width: 300px;
@@ -239,13 +243,13 @@ button {
     filter: brightness(90%);
 }
 
-.fixed-header-settings {
+/* .fixed-header-settings {
   background: #fff;
   padding: 15px 20px;
   border-radius: 8px;
   margin-bottom: 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
+} */
 
 .fixed-setting-item {
   margin-bottom: 10px;
@@ -335,3 +339,49 @@ button {
     margin-bottom: 10px; 
 }
 
+.form_style_list {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.form_style_item {
+  padding: 6px 12px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.form_style_item.selected {
+  background-color: #3697ff;
+}
+
+.form_style_item:hover {
+  background-color: #73b7ff;
+}
+
+.save_box {
+  display: flex;
+  margin-top: 30px;
+  justify-content: space-between;
+}
+
+.save_btn, .clear_change_btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+
+.save_btn:hover, .clear_change_btn:hover {
+  filter: brightness(96%);
+}
+
+.save_btn {
+  background-color:#007BFF;
+  color: white;
+}
+
+.clear_change_btn {
+  background-color: #ddd;
+  border: 1px solid #ccc;
+}

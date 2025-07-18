@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "../../main.js"
+import { popupNotification } from "../popupNotification.js"
 import { configMessageController } from "./configMessageController.js"
 
 const $ = document.querySelector.bind(document)
@@ -20,16 +21,19 @@ export const formController = {
 
     Render() {
         if(!this.form_datas) return
-        this.form_datas.forEach(form_data => this.NewForm(form_data.formName))
+        this.form_datas.forEach(form_data => this.RenderFormBtn(form_data.formName))
         configMessageController.LoadForm(this.current_form)
         configMessageController.Start()
     },
 
     HandleEvent() {
-        $$(".form_item").forEach(element => {
+        $$(".form_item").forEach((element, i) => {
             element.onclick = () => {
                 $$(".form_item").forEach(e => e.className = "form_item")
                 element.className = "form_item selected"
+                this.current_form = i
+                configMessageController.LoadForm(this.current_form)
+                configMessageController.Start()
             }
         });
         $(".side_bar button").onclick = () => {
@@ -37,7 +41,7 @@ export const formController = {
         }
     },
 
-    NewForm(form_name = "New form") {
+    RenderFormBtn(form_name = "New form") {
         const form_list = $(".form_list")
         const para = document.createElement("li");
         para.className = "form_item"
@@ -57,5 +61,77 @@ export const formController = {
         this.form_count++
     },
 
+    async NewForm() {
+        popupNotification.Init()
+        popupNotification.Loading()
+        popupNotification.ShowMessage("Loading ...")
+        const res = await fetchWithAuth("/api/create_new_form", {
+            method: "POST",
+        })
+        const responseData = await res.json()
+        if(res.status === 403 || res.status == 500) {
+            popupNotification.Fail()
+            popupNotification.ShowMessage(responseData.message)
+        } else {
+            popupNotification.Success()
+            popupNotification.ShowMessage("Tạo thành công")
+            this.form_datas.push(responseData.newForm)
+            this.RenderFormBtn(responseData.newForm.formName)
+        }
+
+    },
+
+    async Save(form) {
+
+        const selects = $$('.field-header');
+        const newData = {
+            formId: form.formId,
+            formName: $(".form_info_name").value || form.formName,
+            config: {
+                messageType: form.config.messageType,
+                convertedHeader: {
+                    fixedHeader: {
+                        name: document.getElementById('fixed-ho-ten-header').value,
+                        category: document.getElementById('fixed-hang-muc-header').value
+                    },
+                    laybelHeader: Array.from(selects).map((select,i) => {
+                        return {
+                            laybel:select.value, 
+                            key: select.parentElement.querySelector(".field-label").value, 
+                            range: select.parentElement.querySelector(".field-range").value
+                        }
+                    })
+                },
+                sheetHeader: form.config.sheetHeader,
+                filterKeys: [document.getElementById('fixed-hang-muc-header').value]
+            }
+        }
+
+        popupNotification.Init()
+        popupNotification.Loading("Đang lưu ...")
+
+        console.log(newData)
+
+        const res = await fetchWithAuth("/api/save_form_config", {
+            method: "POST",
+            body: JSON.stringify({
+                formId: form.formId,
+                changeData: newData
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        console.log(res)
+        if(res.status === 200) {
+            popupNotification.Success("Lưu Form thành công")
+        } else {
+            popupNotification.Fail("Form chưa được lưu, vui lòng đợi chút")
+        }
+    },
+
+    async DeleteForm() {
+
+    }
 
 }

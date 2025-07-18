@@ -1,4 +1,4 @@
-.loading_box {
+.popupNotification {
     position: fixed;
     top: 0;
     left: 0;
@@ -6,11 +6,11 @@
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.3);
     /* opacity: 0.3; */
-    display: none;
+    /* display: none; */
     place-content: center;
 }
 
-.loading_box_main {
+.popupNotification_main {
     position: relative;
     width: fit-content;
     background-color: white;
@@ -24,7 +24,7 @@
     margin: auto;
 }
 
-.loading_box_exit {
+.popupNotification_exit {
     position: absolute;
     top: 8%;
     right: 8%;
@@ -37,17 +37,17 @@
     cursor: pointer;
 }
 
-.loading_box_exit:hover {
+.popupNotification_exit:hover {
     color: #6d7d96;
     background-color: #d7e0ef;
 }
 
-.loading_box_result {
+.popupNotification_result {
     margin: 2rem auto;
     width: fit-content;
 }
 
-.loading_box_result.loading .loader {
+.popupNotification_result.loading .loader {
   border: 8px solid #f3f3f3;       /* Màu viền nền */
   border-top: 8px solid #3498db;   /* Màu viền quay */
   border-radius: 50%;              /* Tạo hình tròn */
@@ -64,13 +64,13 @@
     display: none;
 }
 
-.loading_box_result.success .success i {
+.popupNotification_result.success .success i {
     display: block;
     font-size: 4rem;
     color: rgb(0, 189, 0);
 }
 
-.loading_box_result.fail .fail i {
+.popupNotification_result.fail .fail i {
     display: block;
     font-size: 4rem;
     color: rgb(193, 42, 22);
@@ -81,7 +81,7 @@
   100% { transform: rotate(360deg); }
 }
 
-.loading_box_message {
+.popupNotification_message {
     color: var(--primary-text-color);
     font-weight: 700;
     font-size: 1.4rem;
@@ -96,4 +96,36 @@
     word-break: break-all;     
     width: 100%;
     white-space: normal; 
+}
+
+.popupNotification_decision_box {
+    margin-top: 40px;
+    padding: 0 10%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3rem;
+}
+
+.popupNotification_decision_box-no, 
+.popupNotification_decision_box-yes {
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.popupNotification_decision_box-no:hover, 
+.popupNotification_decision_box-yes:hover {
+    filter: brightness(96%);
+}
+
+.popupNotification_decision_box-no {
+    background-color: #cad3e1;
+}
+
+.popupNotification_decision_box-yes {
+    background-color: #47b6f7;
+}
+
+.spacing {
+    height: 40px;
 }

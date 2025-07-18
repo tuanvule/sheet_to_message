@@ -1,13 +1,15 @@
+import { fetchWithAuth } from "../../main.js"
 import { formController } from "./formController.js"
 
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
 export const configMessageController = {
-    forms: {},
+    originForm: {},
+    form: {},
     convertedHeader: {
         fixedHeader: {},
-        laybelHeader: {}
+        laybelHeader: []
     },
     sheetHeader: {},
     fieldCount: 0,
@@ -21,22 +23,46 @@ export const configMessageController = {
 
     LoadForm(form_data) {
         if(form_data) {
-            console.log(form_data)
-            this.config = {...form_data.config}
-            this.fieldCount = this.config.convertedHeader.fixedHeader.length
-            this.convertedHeader = this.config.convertedHeader
-            this.sheetHeader = this.config.sheetHeader
-            Object.keys(this.convertedHeader.laybelHeader).forEach((header) => this.addField());
-            this.updateAllSelects()
+            document.getElementById('fields-area').innerHTML = ""
+            this.headers = []
+            this.sheetHeader = []
+            this.form = form_data
+            this.originForm = form_data
+            // this.config = {...form_data.config}
+            // this.fieldCount = this.config.convertedHeader.fixedHeader.length
+            // this.convertedHeader = this.config.convertedHeader
+            // this.sheetHeader = this.config.sheetHeader
+            Object.keys(this.form.config.convertedHeader.laybelHeader).forEach((header) => this.addField());
+            this.LoadConfigType(this.form.config.messageType)
+            this.LoadFormInfo()
+            this.UpdateAllSelects()
             this.LoadAllField()
             this.LoadFixedHeader()
         }
     },
 
-    LoadHeader() {
-        for(let i = 0; i < this.fieldCount; i++) {
-            
+    LoadFormInfo() {
+        $(".form_info_name").value = this.form.formName
+    },
+
+    LoadConfigType(type) {
+        const allWarper = $$(".warper")
+        allWarper.forEach((ele,i) => {
+            if(i>1) {
+                ele.style.display = "none"
+            }
+        })
+        switch(type) {
+            case "message":
+                $(".fixed-header-settings").style.display = "block";
+                break
+            case "list":
+                break
+            default:
+                break
         }
+
+        this.form.config.messageType = type
     },
 
     HandleEvent() {
@@ -62,10 +88,24 @@ export const configMessageController = {
         
         const fetch_header_btn = $(".fetch_header_btn")
         fetch_header_btn.onclick = () => this.fetchHeaders()
+
+        const form_style_items = $$(".form_style_item")
+        form_style_items.forEach(item => {
+            item.onclick = () => {
+                form_style_items.forEach(ele => ele.classList.remove("selected"))
+                item.classList.add("selected")
+                this.LoadConfigType(item.dataset.type)
+            }
+        })
+
+        const save_btn = $(".save_btn")
+        const clear_change_btn = $(".clear_change_btn")
+
+        save_btn.onclick = () => formController.Save(this.form)
+        clear_change_btn.onclick = () => this.LoadForm(this.originForm)
     },
 
     fetchHeaders() {
-        const apiKey = "AIzaSyBuLAxLpm5IjXMjTtr7fa-KG_x3oAhMMso"
         const sheetId = document.getElementById('sheet-id').value.trim();
         const sheetName = document.getElementById('sheet-name').value.trim();
 
@@ -74,26 +114,23 @@ export const configMessageController = {
             return;
         }
 
-        // const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}!1:1?key=${apiKey}`;
-
         const that = this
-        console.log(that)
 
         fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}&tq=limit 1&tqx=out:json`)
             .then(res => res.text())
             .then(text => {
-                // Visualization API trả về JS call chứ không phải JSON thuần
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 this.headers = json.table.cols.map(c => c.label)
                 this.headers.forEach(() => that.addField());
-                this.updateAllSelects();
+                this.form.config.sheetHeader = this.headers
+                this.UpdateAllSelects();
                 console.log(json);
             });
     },
 
     LoadFixedHeader() {
-        document.getElementById('fixed-ho-ten-header').selectedIndex = this.sheetHeader.findIndex(value => value == this.convertedHeader.fixedHeader.name);
-        document.getElementById('fixed-hang-muc-header').selectedIndex = this.sheetHeader.findIndex(value => value == this.convertedHeader.fixedHeader.category);
+        document.getElementById('fixed-ho-ten-header').selectedIndex = this.form.config.sheetHeader.findIndex(value => value == this.form.config.convertedHeader.fixedHeader.name);
+        document.getElementById('fixed-hang-muc-header').selectedIndex = this.form.config.sheetHeader.findIndex(value => value == this.form.config.convertedHeader.fixedHeader.category);
     },
 
     addHeader() {
@@ -101,7 +138,7 @@ export const configMessageController = {
         const value = input.value.trim();
         if(value && !this.headers.includes(value)) {
             this.headers.push(value);
-            this.updateAllSelects();
+            this.UpdateAllSelects();
         }
         input.value = '';
     },
@@ -109,11 +146,10 @@ export const configMessageController = {
     LoadAllField() {
         const selects = $$('.field-header');
         selects.forEach((select, i) => {
-            select.selectedIndex = this.sheetHeader.findIndex(value => value === Object.keys(this.convertedHeader.laybelHeader)[i])
+            select.parentElement.querySelector(".field-range").selectedIndex = Number(this.form.config.convertedHeader.laybelHeader[i].range.replace("%","")) / 10 - 1
+            select.selectedIndex = this.form.config.sheetHeader.findIndex(value => value === this.form.config.convertedHeader.laybelHeader[i].laybel)
             console.log(select.value)
-            // if(i >= ) {
-                select.parentElement.querySelector(".field-label").value = this.convertedHeader.laybelHeader[select.value]
-            // }
+            select.parentElement.querySelector(".field-label").value = this.form.config.convertedHeader.laybelHeader[i].key
         })
     },
 
@@ -126,22 +162,48 @@ export const configMessageController = {
         div.innerHTML = `
             <input type="text" placeholder="Label hiển thị" class="field-label">
             <select class="field-header"></select>
+            <select class="field-range">
+                <option value="10%">10%</option>
+                <option value="20%">20%</option>
+                <option value="30%">30%</option>
+                <option value="40%">40%</option>
+                <option value="50%">50%</option>
+                <option value="60%">60%</option>
+                <option value="70%">70%</option>
+                <option value="80%">80%</option>
+                <option value="90%">90%</option>
+                <option value="100%">100%</option>
+            </select>
             <button class="remove">X</button>
         `;
         div.querySelector("button").onclick = () => this.removeField(`${fieldId}`);
         document.getElementById('fields-area').appendChild(div);
         this.updateSelect(div.querySelector('select'));
+        div.querySelector(".field-range").onchange = (e) => {
+            this.UpdateFieldRange()
+        }
+    },
+
+    UpdateFieldRange() {
+        const fieldRangeElements = $$(".field-range")
+        const rangeList = Array.from(fieldRangeElements).map(ele => ele.value)
+        console.log(this.form.config.convertedHeader)
+        const newLaybelHeader = this.form.config.convertedHeader.laybelHeader.map((obj,i) => {
+            const { laybel, key, _ } = obj
+            return { laybel, key, range: rangeList[i]}
+        })
+        console.log(newLaybelHeader)
     },
 
     removeField(id) {
         document.getElementById(id).remove();
     },
 
-    LoadAllSelects() {
+    // LoadAllSelects() {
 
-    },
+    // },
 
-    updateAllSelects() {
+    UpdateAllSelects() {
         const selects = $$('.field-header');
         selects.forEach(select => this.updateSelect(select));
 
@@ -151,7 +213,7 @@ export const configMessageController = {
 
     updateSelect(select) {
         select.innerHTML = '';
-        this.sheetHeader.forEach(header => {
+        this.form.config.sheetHeader.forEach(header => {
             const option = document.createElement('option');
             option.value = header;
             option.textContent = header;
@@ -163,9 +225,6 @@ export const configMessageController = {
         const fields = $$('.field-item');
         const sampleData = {}; // Dữ liệu mẫu
         this.headers.forEach(h => sampleData[h] = h + " demo");
-
-        const hoTenHeader = document.getElementById('fixed-ho-ten-header').value;
-        const hangMucHeader = document.getElementById('fixed-hang-muc-header').value;
 
         let html = `
             <div class="message-box">

@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style/loading_box.css">
+    <link rel="stylesheet" href="style/popupNotification.css">
     <link rel="stylesheet" href="style/notification.css">
     <link rel="stylesheet" href="style/main.css">
     <link rel="stylesheet" href="style/responsive.css">
@@ -63,27 +63,11 @@
 
   <!-- 
     - hiển thị loading khi yêu cầu lấy token từ server 
-    - vào style/loading_box.css
-    - tại class .loading_box cho display = block để hiển thị 
+    - vào style/popupNotification.css
+    - tại class .popupNotification cho display = block để hiển thị 
   -->
-  <div class="loading_box">
-    <div class="loading_box_main">
-      <div class="loading_box_exit"><i class="fa-solid fa-x"></i></div>
 
-      <div class="loading_box_result loading">
-        <div class="loader"></div>
-        <div class="success"><i class="fa-solid fa-circle-check"></i></div>
-        <div class="fail"><i class="fa-solid fa-circle-xmark"></i></div>
-      </div>
 
-      <h2 class="loading_box_message">Get Perm successfully</h2>
-      <h3 class="token_show"> 
-        <div class="token_show_title">Your token is:</div>
-        <div class="token_show_token"></div>
-      </h3>
-    </div>
-  </div>
-  
   <div class="login_form"></div>
 
   <div class="navigator">
@@ -99,8 +83,7 @@
   import { initializeApp  } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
   import { getMessaging, getToken, onMessage, isSupported} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-messaging.js"
-  import { GetPermHandler } from "./script/getPermHandler.js"
-  const get_perm_handler = new GetPermHandler();
+  import { popupNotification } from "./script/popupNotification.js"
   const firebaseConfig = {
     apiKey: "AIzaSyAhL7Gbr1ZqG0j1KOmMUUJtCN7byc669ss",
     authDomain: "csvcnhh.firebaseapp.com",
@@ -123,12 +106,11 @@
             body: JSON.stringify({ token })
         });
         const data = await response.json();
-        get_perm_handler.Success()
-        get_perm_handler.Show_token(token)
+        popupNotification.ShowGetPermSatus("success", token)
         console.log('Token registered:', data);
     } catch (error) {
         console.error('Error registering token:', error);
-        get_perm_handler.Fail()
+        popupNotification.ShowGetPermSatus("fail")
     }
 }
 
@@ -179,7 +161,8 @@
   document.getElementById("btn-getPerm").addEventListener("click", async (e)=> {
     // e.preventDefault()
     Notification.requestPermission().then(async (permission) => {
-      get_perm_handler.Loading()
+      popupNotification.Init("getPerm")
+      popupNotification.ShowGetPermSatus("loading")
       if (permission === 'granted') {
            
             console.log('Notification permission granted.');
@@ -194,17 +177,16 @@
 
         }else{
           console.log("tes")
-          get_perm_handler.Show_token("Thiếu quyền cấp phép tính năng thông báo")
-          get_perm_handler.Fail()
+          popupNotification.ShowGetPermSatus("failWithNoNotifiPerm")
             // arlet("Hệ thống không được hỗ trợ nếu không được cấp quyền thông báo, xin hãy bật quyền")
         }
 
     })
   })
-  document.querySelector(".loading_box_exit").addEventListener("click", async (e)=> {
-    // e.preventDefault()
-    get_perm_handler.Exit()
-  })
+  // document.querySelector(".popupNotification_exit").addEventListener("click", async (e)=> {
+  //   // e.preventDefault()
+  //   popupNotification.Exit()
+  // })
 
 // Add this after initializing messaging
 onMessage(messaging, (payload) => {

@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Tin nhắn dynamic field</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style/popupNotification.css">
   <link rel="stylesheet" href="/public/style/adminPage.css">
 </head>
 <body>
@@ -19,23 +21,28 @@
       <button>➕ Thêm Form</button>
     </div>
 
+    <h2>Tùy chỉnh thông tin form</h2>
+    <div class="warper form_info_box">
+      <h3>Tên form</h3><br>
+      <input type="text" class="form_info_name" placeholder="Form 1">
+    </div>
+
     <h2>Tùy chỉnh hiển thị tin nhắn</h2>
-    <div class="sheet_connect_box" id="sheet-connect" style="background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;">
-      <h3>Kết nối Google Sheet</h3>
+    <div class="warper sheet_connect_box" id="sheet-connect">
+      <h3>Kết nối Google Sheet</h3><br>
       <input type="text" id="sheet-id" placeholder="Spreadsheet ID" style="padding:8px; width:200px;">
       <input type="text" id="sheet-name" placeholder="Sheet name" style="padding:8px; width:150px;">
       <button class="fetch_header_btn">Lấy header</button>
     </div>
-    <!-- <h3>Dynamic Fields Template</h3> -->
 
-    <div style="background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;">
-      <label>Headers (cột) từ Google Sheet (nhập thủ công demo):</label><br>
+    <div class="warper">
+      <h3>Headers (cột) từ Google Sheet (nhập thủ công demo):</h3><br>
       <input type="text" id="header-input" placeholder="VD: Họ tên">
       <button class="add_header_btn" onclick="addHeader()">Thêm header</button>
     </div>
 
-    <div class="fixed-header-settings">
-      <h4>Tuỳ chỉnh header phần cố định</h4>
+    <div class="warper fixed-header-settings">
+      <h3>Tuỳ chỉnh header phần cố định</h3><br>
       <div class="fixed-setting-item">
         <label>Header Họ tên</label>
         <select id="fixed-ho-ten-header"></select>
@@ -46,10 +53,23 @@
       </div>
     </div>
 
-    <hr>
-
     <button class="add-field">➕ Thêm field</button>
-    <div id="fields-area"></div>
+    <div id="fields-area">
+            <input type="text" placeholder="Label hiển thị" class="field-label">
+            <select class="field-header"></select>
+            <select class="field-range"></select>
+            <button class="remove">X</button>
+    </div>
+
+    <hr><br>
+
+    <div class="warp">
+      <h3>Tùy chỉnh kiểu form</h3><br>
+      <ul class="form_style_list">
+        <li class="form_style_item selected" data-type="message">message</li>
+        <li class="form_style_item" data-type="list">list</li>
+      </ul>
+    </div>
 
     <button class="show-message">Hiển thị tin nhắn mẫu</button>
 
@@ -63,6 +83,11 @@
 
         </div>
       </div> -->
+    </div>
+
+    <div class="save_box">
+      <div class="clear_change_btn">Bỏ thay đổi</div>
+      <div class="save_btn">Lưu</div>
     </div>
   </div>
 
@@ -80,6 +105,6 @@
   <script type="module" src="/public/script/adminPage/configMessageController.js"></script>
   <script type="module" src="/public/script/adminPage/formController.js"></script>
   <script type="module" src="/public/script/adminPage/adminPageHandler.js"></script>
-
+  
 </body>
 </html>

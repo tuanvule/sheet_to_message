@@ -17,8 +17,6 @@ export class AdminPageHandler {
     async start() {
         await formController.Init();
     }
-
-    
 }
 
 const adminPageHandler = new AdminPageHandler();

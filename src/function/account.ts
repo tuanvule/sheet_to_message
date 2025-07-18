@@ -1,3 +1,4 @@
+import * as admin from 'firebase-admin';
 import { FirebaseAdminControler } from "./firebaseAdmin";
 import { SessionController } from "./sesionController";
 
@@ -121,6 +122,58 @@ export class AccountHandler {
             await firebase.createDocument("User", newAccount)
         } catch(err) {
             console.log("login err: ", err);
+            throw err
+        }
+    }
+
+    public async CreateForm(userId: string) {
+        const fdb = FirebaseAdminControler.getInstance()
+        
+        try {
+            const user: StoredAccount | null = await fdb.getDocument("User",userId)
+            if(user) {
+                await fdb.updateDocument("User", userId, {
+                    "forms": admin.firestore.FieldValue.arrayUnion({
+                        formId: user.userName + `Form_${user.forms.length + 1}`,
+                        formName: `Form_${user.forms.length + 1}`,
+                        config: {
+                            messageType: "normal_message",
+                            convertedHeader: {
+                                fixedHeader: {},
+                                laybelHeader: {}
+                            },
+                            sheetHeader: [],
+                            filterKeys: [],
+                        }
+                    })
+                })
+            } else {
+                throw new Error("cannot create userId")
+            }
+        } catch(err) {
+            throw err
+        }
+    }
+
+    public async SaveFormConfig(userId: string, formId: string, changeData: object) {
+        try {
+            const firebase = FirebaseAdminControler.getInstance()
+            const user: StoredAccount | null = await firebase.getDocument("User", userId)
+            if(user) {
+                const updateForm = user.forms.map(item => {
+                    if (item.formId === formId) {
+                        return changeData;
+                    }
+                    return item;
+                });
+                console.log(JSON.stringify(updateForm, null, 2));
+                await firebase.setDocument("User", userId, {
+                    forms: updateForm
+                })
+            } else {
+                throw new Error("cant find this user")
+            }
+        } catch (err) {
             throw err
         }
     }
