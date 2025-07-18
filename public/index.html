@@ -170,7 +170,9 @@
                 vapidKey: 'BIkFyecCRIPZhZdynwDFni7NpX9Xm5tmx3rqaMMJhGfx29zcuo0q2qY5OhHCV7mQtS1egWywxXU1sr47gvHDjtg'
             });
             console.log('FCM Token:', token);
-            document.querySelector('.token_show_token').innerText = `${token}`;
+            popupNotification.Show_token(token)
+
+            // document.querySelector('.token_show_token').innerText = `${token}`;
 
             //send token back to server
             sendTokenToServer(token)
