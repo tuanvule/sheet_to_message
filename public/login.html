@@ -7,7 +7,7 @@
     <!-- Liên kết file CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="style/popupNotification.css">
-    <link rel="stylesheet" href="./style/loginPage.css">
+    <link rel="stylesheet" href="style/loginPage.css">
 </head>
 <body>
     <div class="container">
@@ -52,7 +52,10 @@
 
                         <button type="submit" class="btn-submit">Đăng Nhập</button>
                     </form>
-
+                    
+                    <p style="text-align: center; margin-bottom: 12px;">HOẶC</p>
+                    <div type="div" class="btn-login_as_member" onclick="showLoginAsMember()">Tham gia với người dùng khác</div>
+                    
                     <div class="form-footer">
                         <button class="btn-secondary" onclick="showSignup()">Tạo tài khoản mới</button>
                     </div>
@@ -115,16 +118,41 @@
                         <button class="btn-secondary" onclick="showLogin()">Quay lại đăng nhập</button>
                     </div>
                 </div>
+
+                <!-- Form tham gia với người dùng khác -->
+                <div id="loginAsMemberForm" class="form-section">
+                    <div class="form-header">
+                        <h1>Tham gia bằng mã mời</h1>
+                    </div>
+
+                    <form onsubmit="handleLoginAsMember(event)">
+                        <div class="form-group">
+                            <label for="joinCode">
+                                <span class="required-star">*</span> Mã mời
+                            </label>
+                            <input type="text" id="joinCode" name="joinCode" placeholder="Nhập mã mời của bạn" required>
+                            <div class="error-message" id="joinCodeError"></div>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Tham Gia</button>
+                    </form>
+                    
+                    <p style="text-align: center; margin-bottom: 12px;">HOẶC</p>
+                    <div type="div" class="btn-login_as_member" onclick="showLogin()">Đăng Nhập Tài Khoản Riêng</div>
+                    
+                    <div class="form-footer">
+                        <button class="btn-secondary" onclick="showSignup()">Tạo tài khoản mới</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="navigator">
-        <div class="home_page_btn"><a href="/public/index.html">Home</a></div>
-    </div>
+        <div class="home_page_btn"><a href="/">Home</a></div>
+    </div>  
 
     <!-- Liên kết file JavaScript -->
     <script src="./script/loginPage/loginHandler.js"></script>
-    
 </body>
 </html>

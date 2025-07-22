@@ -5,7 +5,7 @@ const $$ = document.querySelectorAll.bind(document);
 
 export class RenderFormRequest {
     constructor() {
-        this.data = null;
+        this.form_datas = {};
         this.state = {
             time: "newest",
             type: "all",

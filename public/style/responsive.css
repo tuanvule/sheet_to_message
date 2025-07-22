@@ -1,5 +1,5 @@
 /* responsive */
-@media only screen and (max-width: 800px) {
+@media (max-width: 768px) {
     .register_box {
         margin: 6rem 10% 0 10%;
     }
@@ -16,4 +16,86 @@
     .token_show_token {
         font-size: 0.6rem;
     }
+
+    /* admin page */
+    nav {
+        zoom: 0.8;
+        padding: 10px 20px;
+    }
+
+    .admin_page_overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.2);
+    }
+
+    .template-container h2 {
+        font-size: 1.1rem;
+    }
+    .template-container h3 {
+        font-size: 0.9rem;
+    }
+    .template-container { 
+        width: 100%;
+    }
+    .join_code {
+        font-size: 1.1rem;
+    }
+
+    .side_bar {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        width: 80vw;
+        height: 80%;
+        z-index: 10000;
+    }
+
+    .side_bar_header h2 {
+        font-size: 1.6rem;
+    }
+
+    .admin_page_overlay.show {
+        display: flex;
+        animation: fadeIn 0.3s forwards;
+    }
+
+    .admin_page_overlay.hide {
+        animation: fadeOut 0.3s forwards;
+        display: none;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    .admin_page_overlay.show ~ .side_bar {
+        animation: slideIn 0.3s;
+    }
+
+    .admin_page_overlay.hide ~ .side_bar {
+        animation: slideOut 0.3s forwards;
+    }
+
+    @keyframes slideIn {
+        from { transform: translate(-50%, -45%); opacity: 0; }
+        to { transform: translate(-50%, -50%); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        from { transform: translate(-50%, -50%); opacity: 1; }
+        to { transform: translate(-50%, -45%); opacity: 0; display: none;}
+    }
+
 }

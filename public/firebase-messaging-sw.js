@@ -11,6 +11,11 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging(app);
 
+if (navigator.setAppBadge) {
+  // Display the number of unread messages.
+  navigator.setAppBadge(numberOfUnreadMessages+1);
+}
+
 // console.log("from sw")
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
@@ -22,6 +27,13 @@ messaging.onBackgroundMessage((payload) => {
       body: payload.data.body,
       icon: '/nhh512.png' // Use your icon
     };
+    const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
+    localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 2)
+
+    if (navigator.setAppBadge) {
+      // Display the number of unread messages.
+      navigator.setAppBadge(numberOfUnreadMessages+1);
+    }
 
     self.registration.showNotification(notificationTitle, notificationOptions);
   }

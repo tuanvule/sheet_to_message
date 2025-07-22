@@ -289,6 +289,26 @@ body {
     transform: translateY(0);
 }
 
+.btn-login_as_member {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #2196f3;
+    color: #2196f3;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 16px;
+    transition: 0.15s linear;
+}
+
+.btn-login_as_member:hover {
+    background-color: #2196f3;
+    color: white;
+}
+
 .btn-secondary {
     width: 100%;
     padding: 16px;

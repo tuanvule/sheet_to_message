@@ -28,6 +28,8 @@ export const configMessageController = {
             this.sheetHeader = []
             this.form = form_data
             this.originForm = form_data
+            console.log(this.form)
+            
             // this.config = {...form_data.config}
             // this.fieldCount = this.config.convertedHeader.fixedHeader.length
             // this.convertedHeader = this.config.convertedHeader
@@ -48,7 +50,7 @@ export const configMessageController = {
     LoadConfigType(type) {
         const allWarper = $$(".warper")
         allWarper.forEach((ele,i) => {
-            if(i>1) {
+            if(i>2) {
                 ele.style.display = "none"
             }
         })
@@ -76,6 +78,14 @@ export const configMessageController = {
             }
         });
 
+        const add_header_btn = $(".add_header_btn")
+        add_header_btn.onclick = (e) => {
+            console.log(21321)
+            console.log(this.headers)
+            e.preventDefault()
+            this.addHeader()
+        }
+
         const add_field_btn = $(".add-field")
         add_field_btn.onclick = () => {
             this.addField()
@@ -83,7 +93,7 @@ export const configMessageController = {
 
         const show_message_btn = $(".show-message")
         show_message_btn.onclick = () => {
-            this.renderMessage()
+            this.ShowExampleMessage()
         }
         
         const fetch_header_btn = $(".fetch_header_btn")
@@ -95,6 +105,7 @@ export const configMessageController = {
                 form_style_items.forEach(ele => ele.classList.remove("selected"))
                 item.classList.add("selected")
                 this.LoadConfigType(item.dataset.type)
+                this.ShowExampleMessage()
             }
         })
 
@@ -137,7 +148,7 @@ export const configMessageController = {
         const input = document.getElementById('header-input');
         const value = input.value.trim();
         if(value && !this.headers.includes(value)) {
-            this.headers.push(value);
+            this.form.config.sheetHeader.push(value);
             this.UpdateAllSelects();
         }
         input.value = '';
@@ -221,11 +232,11 @@ export const configMessageController = {
         });
     },
 
-    renderMessage() {
+    RenderMessageType() {
         const fields = $$('.field-item');
         const sampleData = {}; // Dữ liệu mẫu
         this.headers.forEach(h => sampleData[h] = h + " demo");
-
+        
         let html = `
             <div class="message-box">
                 <div class="fixed-item">
@@ -234,7 +245,7 @@ export const configMessageController = {
                 </div>
                 <div class="message-content_list hidden">
         `;
-
+        
         fields.forEach(field => {
             const label = field.querySelector('.field-label').value || 'No label';
             const header = field.querySelector('.field-header').value;
@@ -242,9 +253,50 @@ export const configMessageController = {
             html += `<div class="message-item"><strong>${label}:</strong> ${value}</div>`;
         });
         html += `</div></div>`;
+        
+        document.getElementById('message-display').innerHTML = html;
+        this.HandleEvent();
+    },
+
+    RenderListType() {
+        const fields = Array.from($$('.field-item'));
+        const sampleData = {}; // Dữ liệu mẫu
+        this.headers.forEach(h => sampleData[h] = h + " demo");
+        let html = `
+        <div class="message_list">
+          <ul class="message_title">
+            ${fields.map(field => {
+                const label = field.querySelector('.field-label').value || 'No label';
+                const range = field.querySelector('.field-range').value || "20%";
+                return `<li class="message_title-item" style="width: ${range}">${label}</li>`
+            }).toString().replaceAll(">,<","><")}
+          </ul>
+          <ul class="message_list_content">
+            <li class="message_item">
+                ${fields.map(field => {
+                    const label = field.querySelector('.field-label').value || 'No label';
+                    const range = field.querySelector('.field-range').value || "20%";
+                    return `<div class="message_item_value" style="width: ${range}">${"demo " + label}</div>`
+                }).toString().replaceAll(">,<","><")}
+            </li>
+          </ul>
+        </div>`
 
         document.getElementById('message-display').innerHTML = html;
-
         this.HandleEvent();
+    },
+
+    ShowExampleMessage() {
+        switch(this.form.config.messageType) {
+            case "message":
+                this.RenderMessageType()
+                break
+            case "list":
+                this.RenderListType()
+                break
+            default:
+                this.RenderMessageType()
+                break
+        }
     },
 }

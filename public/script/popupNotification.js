@@ -13,6 +13,8 @@ export const popupNotification = {
     no_btn: "",
     yes_btn: "",
 
+    a: 1,
+
     Reset() {
         this.popupNotification_result.className = "popupNotification_result"
         this.ShowMessage("")
@@ -265,7 +267,7 @@ export const popupNotification = {
                 this.Show_token(token)
                 break
             case "fail":
-                this.Fail()
+                this.Fail("Chưa lấy được token, vui lòng thử lại")
                 break
             case "loading":
                 this.Loading("Get Perm ...")
@@ -274,6 +276,8 @@ export const popupNotification = {
                 this.Fail()
                 this.Show_token("Hệ thống không được hỗ trợ nếu không được cấp quyền thông báo, xin hãy bật quyền")
                 break
+            case "failWithoughtAccount":
+                this.Fail("Bạn chưa có tài khoản, vui lòng đăng nhập hoặc tham gia với người dùng khác")
             default:
 
                 break

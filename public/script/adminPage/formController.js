@@ -11,12 +11,13 @@ export const formController = {
     form_count: 0,
     current_form_index: 0,
 
-    async Init() {
-        const res = await fetchWithAuth("/api/get_account")
-        const data = await res.json()
+    async Init(data) {
+        console.log(data)
+        $(".side_bar-account_name").innerHTML = data.userName
         this.form_datas = data.forms
         this.current_form = this.form_datas[this.current_form_index]
         this.Render()
+        this.HandleEvent();
     },
 
     Render() {
@@ -27,18 +28,29 @@ export const formController = {
     },
 
     HandleEvent() {
+        const form_config_controller = $(".form_config_controller")
+        const account_controller = $(".account_controller")
         $$(".form_item").forEach((element, i) => {
             element.onclick = () => {
+                account_controller.className = "account_controller"
+                form_config_controller.className = "form_config_controller active"
                 $$(".form_item").forEach(e => e.className = "form_item")
                 element.className = "form_item selected"
-                this.current_form = i
+                this.current_form = this.form_datas[i]
                 configMessageController.LoadForm(this.current_form)
                 configMessageController.Start()
+                if(window.mobileCheck()) {
+                    $(".admin_page_overlay").className = "admin_page_overlay hide"
+                }
             }
         });
         $(".side_bar button").onclick = () => {
             this.NewForm()
         }
+    },
+
+    ClearChoosenForm() {
+        $$(".form_item").forEach(e => e.className = "form_item")
     },
 
     RenderFormBtn(form_name = "New form") {
@@ -55,9 +67,9 @@ export const formController = {
             const forms_data = this.form_datas[Number(para.id)]
             configMessageController.LoadForm(forms_data)
         }
-        if(this.form_count == this.current_form_index) {
-            para.classList.add("selected")
-        } 
+        // if(this.form_count == this.current_form_index) {
+        //     para.classList.add("selected")
+        // } 
         this.form_count++
     },
 
@@ -66,7 +78,7 @@ export const formController = {
         popupNotification.Loading()
         popupNotification.ShowMessage("Loading ...")
         const res = await fetchWithAuth("/api/create_new_form", {
-            method: "POST",
+            method: "GET",
         })
         const responseData = await res.json()
         if(res.status === 403 || res.status == 500) {

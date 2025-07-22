@@ -58,6 +58,7 @@ function autoLoadImage() {
 function showLogin() {
     document.getElementById('loginForm').classList.add('active');
     document.getElementById('signupForm').classList.remove('active');
+    document.getElementById('loginAsMemberForm').classList.remove('active');
     clearErrors();
     clearForms();
 }
@@ -66,8 +67,15 @@ function showLogin() {
 function showSignup() {
     document.getElementById('signupForm').classList.add('active');
     document.getElementById('loginForm').classList.remove('active');
+    document.getElementById('loginAsMemberForm').classList.remove('active');
     clearErrors();
     clearForms();
+}
+
+function showLoginAsMember() {
+    document.getElementById('signupForm').classList.remove('active');
+    document.getElementById('loginForm').classList.remove('active');
+    document.getElementById('loginAsMemberForm').classList.add('active');
 }
 
 // Hàm xử lý đăng nhập
@@ -250,6 +258,53 @@ function handleSignup(event) {
                 showLogin();
             }, 1500);
         }, 2000);
+    }
+}
+
+function handleLoginAsMember(event) {
+    event.preventDefault();
+    
+    const submitBtn = event.target.querySelector('.btn-submit');
+    const joinCode = document.getElementById('joinCode').value.trim();
+    
+    let isValid = true;
+    
+    // Clear previous errors
+    clearErrors();
+    
+    // Validate joinCode
+    if (!joinCode) {
+        showError('joinCodeError', 'Mã mời không được bỏ trống');
+        markInputError('joinCodeError');
+        isValid = false;
+    }
+    
+    if (isValid) {
+        // Show loading
+        submitBtn.classList.add('loading');
+        
+        // Simulate API call
+        fetch("/api/login_as_member", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                joinCode
+            })
+        })
+        .then(res => res.json())
+        .then((res) => {
+            console.log(res)
+            if(res.status.isSuccess) {
+                localStorage.setItem("accessToken", res.accessToken)
+            }
+            alert('Tham gia thành công!');
+        })
+        .catch(err => {
+            alert('Mã mời không hợp lệ!\nvui lòng thử lại');
+        })
+        .finally(() => submitBtn.classList.remove('loading'))
     }
 }
 

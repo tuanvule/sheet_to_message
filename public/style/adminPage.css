@@ -6,10 +6,16 @@
   text-decoration: none;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  padding: 40px;
-  background: #f0f2f5;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  /* height: 100vh; */
+  /* padding: 40px; */
+  /* background: #f0f2f5; */
   color: #333;
 }
 
@@ -17,8 +23,57 @@ h2, h3 {
   color: #444;
 }
 
+input {
+  outline: none;
+  border: 1px solid #ccc;
+}
+
+input:focus {
+  border-color: #007BFF;
+}
+
 .warper {
   background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:20px;
+}
+
+nav {
+  background-color: white;
+  padding: 10px 40px;
+}
+
+.menu_btn {
+  font-size: 1.6rem;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.menu_btn:hover {
+  color: #232ea2;
+}
+
+.home_page_btn {
+  font-size: 1.6rem;
+  font-weight: bolder;
+  color: rgb(3, 53, 99);
+  cursor: pointer;
+}
+
+.open_side_bar_btn {
+  background:#fff; 
+  width: fit-content;
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-content: center;
+  border-radius:8px; 
+  box-shadow:0 2px 5px rgba(0,0,0,0.05); 
+  margin-bottom:20px;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.open_side_bar_btn:hover {
+  filter: brightness(96%);
 }
 
 .navigator {
@@ -34,21 +89,12 @@ h2, h3 {
     padding: 8px;
 }
 
-.home_page_btn {
-    width: 100px;
-    height: 40px;
-    display: grid;
-    place-content: center;
-    margin: 0 4px;
-    cursor: pointer;
-}
-
 .template-container { 
   background: #fff; 
   padding: 20px; 
   border-radius: 8px; 
   box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-  max-width: 600px; 
+  width: 700px; 
   margin: auto; 
   position: relative;
 }
@@ -57,8 +103,10 @@ h2, h3 {
   position: absolute;
   left: -300px;
   top: 0;
+  min-height: fit-content;
   height: 100%;
   width: 150px;
+  padding: 0 0 10px 0;
   border-radius: 10px;
   background-color: #FFFFFF;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
@@ -119,63 +167,81 @@ h2, h3 {
 
 }
 
-.side_bar-account_name {
+.side_bar_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   background-color: #FAFAFA;
   border-bottom: 1px solid black;
   padding: 16px 10px;
   border-radius: 10px 10px 0 0;
 }
-/* #header-area {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
+
+.side_bar_header-nav {
+  display: flex;
+  align-items: center;
 }
 
-#header-area label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8px;
-}
-
-#header-area button {
-  padding: 10px 15px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+.side_bar_header i {
+  font-size: 1.8rem;
   cursor: pointer;
 }
 
-#header-area button:hover {
-  background: #0056b3;
+.side_bar_header i:hover {
+  color: black;
 }
 
-#mapping-area {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
+.fontAwesome_box:hover {
+  filter: brightness(96%);
 }
 
-.mapping-select {
-  margin-bottom: 15px;
+.side_bar_header-exit {
+  width: 32px;
+  height: 32px;
+  background-color: #ccc;
+  margin-left: 10px;
+  display: grid;
+  place-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
 }
 
-.mapping-select select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 200px;
+.form_config_controller, .account_controller {
+  display: none;
 }
 
-#message-display {
-  margin-top: 20px;
-} 
+.account_controller.active {
+  display: block;
+}
 
-*/
+.join_code_block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.copy_join_code i {
+  color: #989898;
+  cursor: pointer;
+  font-size: 1.3rem;
+}
+
+.copy_join_code i:hover {
+  color: black;
+}
+
+.join_code {
+  font-size: 1.8rem;
+  font-weight: bolder;
+  color: #333;
+}
+
+.form_config_controller.active {
+  display: block;
+}
 
 .message-box {
   border-left: 5px solid #007bff;
@@ -204,8 +270,8 @@ h2, h3 {
 
 #header-input, .form_info_name {
   padding: 10px;
-  width: calc(100% - 130px);
-  max-width: 300px;
+  /* width: 20%; */
+  /* max-width: 300px; */
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -324,9 +390,32 @@ button {
     cursor: grab; 
 }
 .field-item input, select { 
-    margin-right: 10px; 
-    padding: 5px; 
+  margin-right: 10px; 
+  padding: 5px;
+  outline: none;
+  border: 1px solid #ccc;
 }
+
+.field-item input:focus, select:focus {
+  border: 1px solid #007bff;
+}
+
+.field-label {
+  width: 30%;
+}
+
+.field-header {
+  width: 40%;
+}
+
+.field-range {
+  width: 20%;
+}
+
+.field-item .remove {
+  width: 10%;
+}
+
 .field-item .remove { 
     background: #dc3545; 
     color: white; 
@@ -361,6 +450,36 @@ button {
   background-color: #73b7ff;
 }
 
+.message_list {
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+  /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.message_title {
+  display: flex;
+  background-color: #F1F4F9;
+  padding: 10px;
+  color: #1C2486;
+  font-weight: 600;
+}
+
+/* .message_title li {
+  width: 20%;
+} */
+
+.message_item {
+  display: flex;
+  padding: 10px;
+  color: #6a7381;
+}
+
+/* .message_item_value {
+  width: 20%;
+} */
+
 .save_box {
   display: flex;
   margin-top: 30px;
@@ -385,3 +504,5 @@ button {
   background-color: #ddd;
   border: 1px solid #ccc;
 }
+
+

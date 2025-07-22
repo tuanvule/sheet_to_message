@@ -242,7 +242,7 @@ export class FirebaseAdminControler {
         return [];
       }
 
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }) as T);
+      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }) as T);
     } catch (error) {
       console.error("Error querying documents:", error);
       throw new Error("Failed to query documents");

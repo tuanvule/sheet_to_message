@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="style/popupNotification.css">
     <link rel="stylesheet" href="style/notification.css">
     <link rel="stylesheet" href="style/main.css">
-    <link rel="stylesheet" href="style/responsive.css">
+    <!-- <link rel="stylesheet" href="style/responsive.css"> -->
 </head>
 <body>
   <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js" type="module"></script>
@@ -20,7 +20,7 @@
   <!-- hộp đăng ký nhận thông báo(notificaiton) -->
   <div class="register_box">
     <h1 class="title">Công cụ thông báo CSVC - NHH</h1>
-    <button id="btn-getPerm">Lấy thông tin / đăng kí thiết bị</button>
+    <div id="btn-getPerm">Lấy thông tin / đăng kí thiết bị</div>
     <div class="check_is_support">
       <div id="support-icon"></div>
       <div id="fcm-tok"></div>
@@ -28,38 +28,6 @@
   </div>
 
 
-  <!-- render ra mấy cái thông báo nhận được -->
-  <h1 class="notification_title">Notification</h1>
-  <div class="notifications_box">
-    <ul class="notification_list">
-      <div class="notification_item">
-        <div class="notification_item_class">11A7</div>
-        <div class="notification_item_content">
-          <div class="notification_item_content-time">time state</div>
-          <div class="notification_item_content-name">ten hoc sinh</div>
-          <div class="notification_item_content-body">message</div>
-        </div>
-      </div>
-
-      <div class="notification_item">
-        <div class="notification_item_class">11A7</div>
-        <div class="notification_item_content">
-          <div class="notification_item_content-time">time state</div>
-          <div class="notification_item_content-name">ten hoc sinh</div>
-          <div class="notification_item_content-body">messagedsadas fa;tr hspohegodshasdasfasgasdgadgasdf[ousd f[iay[g ya[idgf [adg[sdzdgf</div>
-        </div>
-      </div>
-
-      <div class="notification_item">
-        <div class="notification_item_class">11A7</div>
-        <div class="notification_item_content">
-          <div class="notification_item_content-time">time state</div>
-          <div class="notification_item_content-name">ten hoc sinh</div>
-          <div class="notification_item_content-body">message</div>
-        </div>
-      </div>
-    </ul>
-  </div>
 
   <!-- 
     - hiển thị loading khi yêu cầu lấy token từ server 
@@ -71,8 +39,8 @@
   <div class="login_form"></div>
 
   <div class="navigator">
-    <div class="admin_pagge_btn"><a href="/public/admin.html">Admin</a></div>
-    <div class="login_btn"><a href="/public/login.html">Login</a></div>
+    <div class="admin_pagge_btn"><a href="/admin">Admin</a></div>
+    <div class="login_btn"><a href="/login">Login</a></div>
   </div>
 
 </body>
@@ -84,6 +52,8 @@
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
   import { getMessaging, getToken, onMessage, isSupported} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-messaging.js"
   import { popupNotification } from "./script/popupNotification.js"
+
+  popupNotification.a = 2
   const firebaseConfig = {
     apiKey: "AIzaSyAhL7Gbr1ZqG0j1KOmMUUJtCN7byc669ss",
     authDomain: "csvcnhh.firebaseapp.com",
@@ -103,14 +73,18 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken}`,
+                Authorization: `Bearer ${accessToken+"ádasdasd"}`,
                 credentials: "include",
             },
             body: JSON.stringify({ token })
         });
-        const data = await response.json();
-        popupNotification.ShowGetPermSatus("success", token)
-        console.log('Token registered:', data);
+        console.log(response)
+        if(response.status === 403) {
+          popupNotification.ShowGetPermSatus("failWithoughtAccount")
+        }
+        // const data = await response.json();
+        // popupNotification.ShowGetPermSatus("success", token)
+        // console.log('Token registered:', data);
     } catch (error) {
         console.error('Error registering token:', error);
         popupNotification.ShowGetPermSatus("fail")
@@ -170,21 +144,20 @@
            
             console.log('Notification permission granted.');
             const token = await getToken(messaging,{
-                vapidKey: 'BIkFyecCRIPZhZdynwDFni7NpX9Xm5tmx3rqaMMJhGfx29zcuo0q2qY5OhHCV7mQtS1egWywxXU1sr47gvHDjtg'
+                vapidKey: 'BIkFyecCRIPZhZdynwDFni7NpX9Xm5tmx3rqaMMJhGfx29zcuo0q2qY5OhHCV7mQtS1egWywxXU1sr47gvHDjtg',
+                // serviceWorkerRegistration: await navigator.serviceWorker.register('./firebase-messaging-sw.js')
             });
             console.log('FCM Token:', token);
-            popupNotification.Show_token(token)
-
-            // document.querySelector('.token_show_token').innerText = `${token}`;
 
             //send token back to server
             sendTokenToServer(token)
 
-        }else{
-          console.log("tes")
-          popupNotification.ShowGetPermSatus("failWithNoNotifiPerm")
-            // arlet("Hệ thống không được hỗ trợ nếu không được cấp quyền thông báo, xin hãy bật quyền")
-        }
+      }
+      else{
+        console.log("tes")
+        popupNotification.ShowGetPermSatus("failWithNoNotifiPerm")
+          // arlet("Hệ thống không được hỗ trợ nếu không được cấp quyền thông báo, xin hãy bật quyền")
+      }
 
     })
   })
