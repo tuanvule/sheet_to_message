@@ -39,12 +39,15 @@ const sessionController = new SessionController();
 const JWTAuth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
+  console.log("authHeader: " + authHeader)
+
   if (!authHeader) return res.status(401).json({ error: "No token provided" });
 
   const token = authHeader.split(" ")[1];
   const JWT_SECRET = process.env.JWT_SECRET
   if(!JWT_SECRET) return res.json({mess: "err"})
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    console.log(err)
     if (err) return res.status(403).json({ error: "Invalid token or token exprired" });
 
     // ✅ Lưu user info vào req.user
@@ -71,6 +74,8 @@ app.get('/api/', (req, res) => {
 
 app.post('/api/register-token', JWTAuth, async (req, res) => {
     const { token } = req.body;
+
+    console.log(token)
     // fdb.collection("client_token").add({token: token})
 
     const userState = res.locals.userState
@@ -126,8 +131,6 @@ app.get('/api/get-form-request', JWTAuth, async (req, res) => {
         }
 
         for(const {formId, formName} of userAccount.forms) {
-          console.log(formId)
-          console.log(formName)
           // const requestData = await firebase.queryDocuments("form_request", ref => ref.where("formId", "==", formId).where("is_handle", "==", false))
           const requestData = await firebase.queryDocuments("form_request", ref => ref.where("formId", "==", formId).where("is_handled", "==", false))
           if(requestData.length > 0) {

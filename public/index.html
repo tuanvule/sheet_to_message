@@ -73,7 +73,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken+"ádasdasd"}`,
+                Authorization: `Bearer ${accessToken}`,
                 credentials: "include",
             },
             body: JSON.stringify({ token })
@@ -81,6 +81,8 @@
         console.log(response)
         if(response.status === 403) {
           popupNotification.ShowGetPermSatus("failWithoughtAccount")
+        } else {
+          popupNotification.ShowGetPermSatus("success", token)
         }
         // const data = await response.json();
         // popupNotification.ShowGetPermSatus("success", token)

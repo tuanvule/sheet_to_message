@@ -261,7 +261,7 @@ export const popupNotification = {
         if(!this.popupNotification) this.Init("getPerm")
         switch (status) {
             case "success":
-                this.Success()
+                this.Success("thành công")
                 this.Show_token(token)
                 break
             case "fail":
