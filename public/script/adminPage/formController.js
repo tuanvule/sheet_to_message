@@ -1,11 +1,11 @@
-// import { fetchWithAuth } from "../../main.js"
-// import { popupNotification } from "../popupNotification.js"
-// import { configMessageController } from "./configMessageController.js"
+import { fetchWithAuth } from "../../main.js"
+import { popupNotification } from "../popupNotification.js"
+import { configMessageController } from "./configMessageController.js"
 
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
-/*export*/ const formController = {
+export const formController = {
     form_datas: [],
     current_form: {},
     form_count: 0,

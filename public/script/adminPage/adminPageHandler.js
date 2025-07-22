@@ -1,6 +1,6 @@
-// import { fetchWithAuth } from "../../main.js";
-// import { popupNotification } from "../popupNotification.js";
-// import { formController } from "./formController.js";
+import { fetchWithAuth } from "../../main.js";
+import { popupNotification } from "../popupNotification.js";
+import { formController } from "./formController.js";
 
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
@@ -8,7 +8,7 @@ const $$ = document.querySelectorAll.bind(document)
 // let this.headers = [];
 // let this.fieldCount = 0;
 
-/*export*/ class AdminPageHandler {
+export class AdminPageHandler {
     constructor() {
         this.headers = []
         this.fieldCount = 0;
