@@ -44,14 +44,14 @@
   </div>
 
 </body>
-<script type="module" src="/script/renderFormRequest.js"></script>
-<script type="module" src="main.js"></script>
+<script src="/script/renderFormRequest.js"></script>
+<script src="main.js"></script>
 
 <script type="module">
   import { initializeApp  } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
   import { getMessaging, getToken, onMessage, isSupported} from "https://www.gstatic.com/firebasejs/11.7.3/firebase-messaging.js"
-  import { popupNotification } from "./script/popupNotification.js"
+  // import { popupNotification } from "./script/popupNotification.js"
 
   popupNotification.a = 2
   const firebaseConfig = {

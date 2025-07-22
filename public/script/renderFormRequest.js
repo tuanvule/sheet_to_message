@@ -1,4 +1,4 @@
-import { fetchWithAuth } from "../main.js";
+// import { fetchWithAuth } from "../main.js";
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
