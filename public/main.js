@@ -90,5 +90,5 @@ document.querySelector("body").innerHTML += Boolean(navigator.setAppBadge)
 
 if (navigator.setAppBadge) {
   // Display the number of unread messages.
-  navigator.setAppBadge(numberOfUnreadMessages+1);
+  navigator.setAppBadge(1);
 }
