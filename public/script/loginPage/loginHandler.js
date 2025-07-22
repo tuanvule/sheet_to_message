@@ -137,8 +137,10 @@ function handleLogin(event) {
             console.log(res)
             if(res.status.isSuccess) {
                 localStorage.setItem("accessToken", res.accessToken)
+                alert('Đăng nhập thành công!\nEmail: ' + email);
+            } else {
+                alert('Đăng nhập chưa thành công!\n Sai email hoặc mật khẩu');
             }
-            alert('Đăng nhập thành công!\nEmail: ' + email);
         })
         .catch(err => {
             alert('Đăng nhập chưa thành công!\nvui lòng thử lại');

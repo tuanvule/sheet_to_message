@@ -1,0 +1,347 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const firebaseAdmin_1 = require("./function/firebaseAdmin");
+const sheet_1 = require("./function/sheet");
+const formSubmit_1 = require("./function/formSubmit");
+const securityCheck_1 = require("./function/securityCheck");
+const path_1 = __importDefault(require("path"));
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const account_1 = require("./function/account");
+const sesionController_1 = require("./function/sesionController");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const keyPath = path_1.default.resolve(__dirname, '../key.json');
+const app = (0, express_1.default)();
+const PORT = process.env.PORT || 3092;
+// Middleware
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use((0, cors_1.default)({
+    origin: ["https://sheet-to-message.vercel.app", "http://127.0.0.1:5500"], // frontend origin
+    credentials: true
+}));
+app.use((0, cookie_parser_1.default)());
+app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
+const formSubmitHandler = new formSubmit_1.FormSubmitHandler();
+const securityCheck = new securityCheck_1.SecurityCheck();
+const accountHandler = new account_1.AccountHandler();
+const sessionController = new sesionController_1.SessionController();
+const JWTAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader)
+        return res.status(401).json({ error: "No token provided" });
+    const token = authHeader.split(" ")[1];
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET)
+        return res.json({ mess: "err" });
+    jsonwebtoken_1.default.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err)
+            return res.status(403).json({ error: "Invalid token or token exprired" });
+        // ✅ Lưu user info vào req.user
+        res.locals.userState = decoded;
+        next();
+    });
+};
+app.get('/', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../public', 'index.html'));
+});
+app.get('/admin', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../public', 'admin.html'));
+});
+app.get('/login', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../public', 'login.html'));
+});
+app.get('/api/', (req, res) => {
+    res.json({ message: "twt" });
+});
+app.post('/api/register-token', JWTAuth, async (req, res) => {
+    const { token } = req.body;
+    // fdb.collection("client_token").add({token: token})
+    const userState = res.locals.userState;
+    console.log(userState);
+    if (userState) {
+        let firebase = firebaseAdmin_1.FirebaseAdminControler.getInstance();
+        // firebase.createDocument("client_token",{token})
+        await firebase.createDocumentIfNotExists("client_token", {
+            token,
+            userName: userState.userName
+        }, "token");
+        res.json({ message: 'Token registered successfully' });
+    }
+    else {
+        res.status(403).json({ message: "you need login a join with another user" });
+    }
+});
+app.get('/api/get-list-token', async (req, res) => {
+    let firebase = firebaseAdmin_1.FirebaseAdminControler.getInstance();
+    console.log(await firebase.getCollection("client_token"));
+    res.send("ok");
+});
+app.post('/api/webhook/:userName', async (req, res) => {
+    try {
+        const userName = req.params.userName;
+        let { type, info, formId } = req.body;
+        if (securityCheck.containsHTML(JSON.stringify(req.body))) {
+            res.sendStatus(403);
+        }
+        await formSubmitHandler.handleSubmit(info, userName, formId);
+        res.send("ok");
+    }
+    catch (err) {
+        console.error("webhook request form unknow: ", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.get('/api/get-form-request', JWTAuth, async (req, res) => {
+    try {
+        const firebase = firebaseAdmin_1.FirebaseAdminControler.getInstance();
+        const userState = res.locals.userState;
+        if (userState.userId) {
+            const userAccount = await firebase.getDocument("User", userState.userId);
+            if (userAccount) {
+                let return_Data = {
+                    formConfig: userAccount.forms,
+                    forms_request: {}
+                };
+                for (const { formId, formName } of userAccount.forms) {
+                    console.log(formId);
+                    console.log(formName);
+                    // const requestData = await firebase.queryDocuments("form_request", ref => ref.where("formId", "==", formId).where("is_handle", "==", false))
+                    const requestData = await firebase.queryDocuments("form_request", ref => ref.where("formId", "==", formId).where("is_handled", "==", false));
+                    if (requestData.length > 0) {
+                        return_Data.forms_request[formName] = requestData;
+                    }
+                }
+                res.json(return_Data);
+            }
+        }
+    }
+    catch (err) {
+        res.status(500).json({ message: "international error, cannot get form request" });
+    }
+    // let csvcRequestData = await firebase.queryDocuments("csvc_request", (ref) => ref.where("is_handled","==",false))
+    // let studentRequestData = await firebase.queryDocuments("student_request", (ref) => ref.where("is_handled","==",false))
+    // res.json({
+    //   csvc: csvcRequestData,
+    //   student: studentRequestData,
+    // })
+});
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        console.log(req.body)
+        let status;
+        status = await accountHandler.LoginAsAdmin(email, password);
+        if (status.isSuccess) {
+            const JWT_SECRET = process.env.JWT_SECRET;
+            const REFRESH_SECRET = process.env.REFRESH_SECRET;
+            if (!(JWT_SECRET && REFRESH_SECRET))
+                throw new Error("JWT_SECRET is not defined in environment variables.");
+            const accessToken = jsonwebtoken_1.default.sign(status, JWT_SECRET, { expiresIn: "1d" });
+            const refreshToken = jsonwebtoken_1.default.sign(status, REFRESH_SECRET, { expiresIn: "7d" });
+            // Set refresh token as httpOnly cookie
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: true, // HTTPS production
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+            res.json({ status, accessToken: accessToken });
+        }
+    }
+    catch (err) {
+        console.error("unvalid login request: ", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.post('/api/login_as_member', async (req, res) => {
+    try {
+        const { joinCode } = req.body;
+        let status;
+        status = await accountHandler.LoginAsMember(joinCode);
+        if (status.isSuccess) {
+            const JWT_SECRET = process.env.JWT_SECRET;
+            const REFRESH_SECRET = process.env.REFRESH_SECRET;
+            if (!(JWT_SECRET && REFRESH_SECRET))
+                throw new Error("JWT_SECRET is not defined in environment variables.");
+            const accessToken = jsonwebtoken_1.default.sign(status, JWT_SECRET, { expiresIn: "1d" });
+            const refreshToken = jsonwebtoken_1.default.sign(status, REFRESH_SECRET, { expiresIn: "7d" });
+            // Set refresh token as httpOnly cookie
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: true, // HTTPS production
+                sameSite: "strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+            res.json({ status, accessToken: accessToken });
+        }
+    }
+    catch (err) {
+        console.error("unvalid login request: ", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.post('/api/logout', async (req, res) => {
+    const sessionId = req.cookies.sessionId;
+    if (sessionId) {
+        const firebase = firebaseAdmin_1.FirebaseAdminControler.getInstance();
+        await firebase.deleteDocument("sessions", sessionId);
+    }
+    res.clearCookie("sessionId", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict"
+    });
+    res.json({ message: "Logged out" });
+});
+app.post('/api/signup', async (req, res) => {
+    try {
+        const { userName, email, password } = req.body;
+        let status;
+        status = await accountHandler.LoginAsAdmin(userName, password);
+        await accountHandler.CreateAccount(userName, email, password);
+    }
+    catch (err) {
+        console.error("unvalid login request: ", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.get('/api/get_account', JWTAuth, async (req, res) => {
+    try {
+        console.log();
+        const useState = res.locals.userState;
+        if (useState.role === "member")
+            res.sendStatus(403);
+        const userId = res.locals.userState.userId;
+        const account = await accountHandler.GetAccount(userId);
+        if (!account)
+            return res.status(401).json({ message: "cannot find account" });
+        res.json(account);
+    }
+    catch (err) {
+        console.error("unvalid session state request: ", err);
+        res.status(500).json({ error: err });
+    }
+});
+app.get("/api/create_new_form", JWTAuth, async (req, res) => {
+    const userState = res.locals.userState;
+    if (userState.role === "admin") {
+        try {
+            const response = await accountHandler.CreateForm(userState.userId);
+            res.json({ newForm: response });
+            // throw new Error
+        }
+        catch (err) {
+            res.status(500).json({ message: "international server error" });
+        }
+    }
+    else {
+        res.status(403).json({ message: "user must be owner to do this" });
+    }
+});
+app.post("/api/save_form_config", JWTAuth, async (req, res) => {
+    try {
+        const userState = res.locals.userState;
+        if (userState.role === "admin") {
+            const { formId, changeData } = req.body;
+            await accountHandler.SaveFormConfig(userState.userId, formId, changeData);
+            res.status(200).json();
+        }
+        else {
+            res.status(403).json({ message: "user must be owner to do this" });
+        }
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "internationcal error" });
+    }
+});
+app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
+// Initialize services and start server
+(async () => {
+    try {
+        // Initialize Sheet Controller
+        let sheetController = sheet_1.SheetController.getInstance();
+        await sheetController.initialize({
+            keyFile: "key.json",
+            sheetID: "18TVGscW2Syp7fkB_uYE8Tx_GirQVGmaaj6hZ7-MCMH4"
+        });
+        console.log("Sheet controller initialized");
+        // let sheetData = await sheetController.getRawData("test");
+        // console.log(sheetData)
+        // Initialize Firebase Admin Controller
+        let firebase = firebaseAdmin_1.FirebaseAdminControler.getInstance();
+        await firebase.initialize(keyPath);
+        // let account = await firebase.getDocument("User", "Rr0qAwaUUYnX7oLjxf6K")
+        // let data = {
+        //   userName: 'NHH',
+        //   email: 'ngovipmo1@gmail.com',
+        //   // memberPassword: 'NHH2@',
+        //   password: 'adminNHh2@',
+        //   forms: [ { 
+        //     formName: 'csvc', 
+        //     config: {
+        //       filterKeys: ["category"],
+        //       convertedHeader: {
+        //         fixedHeader: {
+        //           name: "Họ tên người báo tin",
+        //           category: "Hạng mục",
+        //         },
+        //         laybelHeader: {
+        //           "Dấu thời gian": "time",
+        //           "Địa điểm(tại lớp nào hoặc nơi nào)": "place",
+        //           "mô tả tình trạng hư hỏng": "who",
+        //         },
+        //       },
+        //       messageType: "normal_message",
+        //       sheetHeader: [
+        //         "Dấu thời gian",
+        //         "Hạng mục",
+        //         "Địa điểm(tại lớp nào hoặc nơi nào)",
+        //         "mô tả tình trạng hư hỏng",
+        //         "Họ tên người báo tin",
+        //       ]
+        //     }, 
+        //     formId: 'NHH-csvc' 
+        //   } ],
+        // }
+        // await firebase.setDocument("User", "Rr0qAwaUUYnX7oLjxf6K", data)
+        console.log("Firebase controller initialized");
+        //     const emailService = EmailServices.getInstance();
+        //     emailService.initialize({
+        //       service: 'Hotmail',
+        //       user: '',
+        //       password: '' // Use app password for Gmail
+        //     });
+        //     // Send an email
+        //     async function sendWelcomeEmail(userEmail: string, userName: string) {
+        //       try {
+        //         await emailService.sendEmail({
+        //           to: userEmail,
+        //           subject: 'Welcome to Our Service',
+        //           text: `Hello ${userName}, welcome to our service!`,
+        //           html: `<h1>Welcome ${userName}!</h1><p>We're glad to have you with us.</p>`
+        //         });
+        //         console.log('Welcome email sent successfully');
+        //       } catch (error) {
+        //         console.error('Failed to send welcome email:', error);
+        //       }
+        //     }
+        // // Usage example
+        // sendWelcomeEmail('A@A.A', 'A');
+        // Start the Express server
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT} \n 127.0.0.1:${PORT}`);
+        });
+    }
+    catch (error) {
+        console.error('Initialization error:', error);
+        process.exit(1);
+    }
+})();

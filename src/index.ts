@@ -170,6 +170,8 @@ app.post('/api/login', async (req,res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000
       });
       res.json({status, accessToken: accessToken})
+    } else {
+      res.status(404).json({status})
     }
   }
   catch(err) {
