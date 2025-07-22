@@ -3,7 +3,7 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
-export class RenderFormRequest {
+/*export*/ class RenderFormRequest {
     constructor() {
         this.form_datas = {};
         this.state = {

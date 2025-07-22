@@ -3,7 +3,7 @@ const $$ = document.querySelectorAll.bind(document)
 
 
 
-export const popupNotification = {
+/*export*/ const popupNotification = {
     notifi_list: "",
     popupNotification: "",
     popupNotification_result: "",

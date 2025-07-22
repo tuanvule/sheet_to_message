@@ -8,7 +8,7 @@ const $$ = document.querySelectorAll.bind(document)
 // let this.headers = [];
 // let this.fieldCount = 0;
 
-export class AdminPageHandler {
+/*export*/ class AdminPageHandler {
     constructor() {
         this.headers = []
         this.fieldCount = 0;

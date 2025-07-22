@@ -5,7 +5,7 @@
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
-export const formController = {
+/*export*/ const formController = {
     form_datas: [],
     current_form: {},
     form_count: 0,

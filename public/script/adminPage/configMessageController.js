@@ -4,7 +4,7 @@
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
-export const configMessageController = {
+/*export*/ const configMessageController = {
     originForm: {},
     form: {},
     convertedHeader: {

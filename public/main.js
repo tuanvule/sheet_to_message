@@ -12,7 +12,7 @@ window.mobileCheck = function() {
   return check;
 };
 
-export async function fetchWithAuth(url, options = { method: "GET"}) {
+/*export*/ async function fetchWithAuth(url, options = { method: "GET"}) {
   const accessToken = localStorage.getItem("accessToken")
   console.log(options,accessToken)
   let res = await fetch(url, {
