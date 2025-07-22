@@ -134,8 +134,8 @@
 }
 })();
   document.getElementById('fcm-tok').innerText = `Đang chờ kiểm định thiết bị`;
-
-  document.getElementById("btn-getPerm").addEventListener("click", async (e)=> {
+  async function getPerm(e) {
+    console.log("WTF")
     // e.preventDefault()
     Notification.requestPermission().then(async (permission) => {
       popupNotification.Init("getPerm")
@@ -160,7 +160,11 @@
       }
 
     })
-  })
+  }
+  console.log(document.getElementById("btn-getPerm"))
+  document.getElementById("btn-getPerm").addEventListener("click", getPerm)
+  document.getElementById("btn-getPerm").addEventListener("touch", getPerm)
+
   // document.querySelector(".popupNotification_exit").addEventListener("click", async (e)=> {
   //   // e.preventDefault()
   //   popupNotification.Exit()
