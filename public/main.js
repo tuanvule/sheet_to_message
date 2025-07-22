@@ -85,11 +85,3 @@ if(res.status !== 500) {
   popupNotification.Init()
   popupNotification.Fail(data.message)
 }
-
-document.querySelector("body").innerHTML += Boolean(navigator.setAppBadge)
-
-if (navigator.setAppBadge) {
-  document.querySelector("body").innerHTML += "valid"
-  // Display the number of unread messages.
-  navigator.setAppBadge(1);
-}

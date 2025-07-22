@@ -161,9 +161,15 @@
 
     })
   }
+  document.querySelector("body").innerHTML += Boolean(navigator.setAppBadge)
+
+  if (navigator.setAppBadge) {
+    document.querySelector("body").innerHTML += "valid"
+    // Display the number of unread messages.
+    navigator.setAppBadge(1);
+  }
   console.log(document.getElementById("btn-getPerm"))
   document.getElementById("btn-getPerm").addEventListener("click", getPerm)
-  document.getElementById("btn-getPerm").addEventListener("touch", getPerm)
 
   // document.querySelector(".popupNotification_exit").addEventListener("click", async (e)=> {
   //   // e.preventDefault()
