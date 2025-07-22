@@ -29,6 +29,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, '../public')));
 
 const formSubmitHandler: FormSubmitHandler = new FormSubmitHandler();
 const securityCheck = new SecurityCheck();
