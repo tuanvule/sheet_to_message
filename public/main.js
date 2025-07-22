@@ -73,12 +73,22 @@ const res = await fetchWithAuth("/api/get-form-request")
 const data = await res.json()
 if(res.status !== 500) {
   console.log(data)
-  data.forms_request.csvc.forEach(request => {
-    if(request.submitData.headerData.length === 0) return
-    document.querySelector("body").innerHTML += `<div>${request.submitData.rowData}</div>`
-  });
+  try {
+    data.forms_request.csvc.forEach(request => {
+      if(request.submitData.headerData.length === 0) return
+      document.querySelector("body").innerHTML += `<div>${request.submitData.rowData}</div>`
+    });
+  } catch(err) {
+    console.log(err)
+  }
 } else {
   popupNotification.Init()
   popupNotification.Fail(data.message)
 }
 
+document.querySelector("body").innerHTML += Boolean(navigator.setAppBadge)
+
+if (navigator.setAppBadge) {
+  // Display the number of unread messages.
+  navigator.setAppBadge(numberOfUnreadMessages+1);
+}

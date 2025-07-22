@@ -11,11 +11,6 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging(app);
 
-if (navigator.setAppBadge) {
-  // Display the number of unread messages.
-  navigator.setAppBadge(numberOfUnreadMessages+1);
-}
-
 // console.log("from sw")
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
