@@ -134,15 +134,16 @@ function handleLogin(event) {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res)
             if(res.status.isSuccess) {
                 localStorage.setItem("accessToken", res.accessToken)
                 alert('Đăng nhập thành công!\nEmail: ' + email);
+                window.location.href = "/"
             } else {
                 alert('Đăng nhập chưa thành công!\n Sai email hoặc mật khẩu');
             }
         })
         .catch(err => {
+            console.log(err)
             alert('Đăng nhập chưa thành công!\nvui lòng thử lại');
         })
         .finally(() => submitBtn.classList.remove('loading'))
@@ -297,7 +298,6 @@ function handleLoginAsMember(event) {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res)
             if(res.status.isSuccess) {
                 localStorage.setItem("accessToken", res.accessToken)
             }

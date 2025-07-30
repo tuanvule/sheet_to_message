@@ -1,149 +1,240 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
+  <title>NHH Notify</title>
+  <meta charset="UTF-8">
+  <link rel="manifest" href="/manifest.json"> 
+  <link rel="icon" href="nhh512.png" type="image/png"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tin nhắn dynamic field</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/style/popupNotification.css">
   <link rel="stylesheet" href="/style/adminPage.css">
   <link rel="stylesheet" href="/style/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/dark.min.css" integrity="sha512-bfLTSZK4qMP/TWeS1XJAR/VDX0Uhe84nN5YmpKk5x8lMkV0D+LwbuxaJMYTPIV13FzEv4CUOhHoc+xZBDgG9QA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-dark.min.css" integrity="sha512-Vj6gPCk8EZlqnoveEyuGyYaWZ1+jyjMPg8g4shwyyNlRQl6d3L9At02ZHQr5K6s5duZl/+YKMnM3/8pDhoUphg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css" integrity="sha512-rO+olRTkcf304DQBxSWxln8JXCzTHlKnIdnMUwYvQa9/Jd4cQaNkItIUj6Z4nvW1dqK0SKXLbn9h4KwZTNtAyw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
 </head>
 <body>
-  <nav>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+  <nav class="admin_side_bar_nav">
     <div class="left_block">
-      <i class="fa-solid fa-bars menu_btn"></i>
-      <a href="/" class="home_page_btn">NHH Notify</a>
+      
+      <!-- <i class="fa-solid fa-bars menu_btn"></i> -->
+      <a href="/" class="home_page_btn">
+        <i class="fa-solid fa-house home_btn"></i>
+        NHH Notify
+      </a>
     </div>
   </nav>
 
   
-  <div style="padding: 40px;">
-    <div class="open_side_bar_btn">
-      <i class="fa-solid fa-sliders"></i>
-    </div>
-    <div class="template-container">
-      <div class="admin_page_overlay show"></div>
+  <div style="padding: 10px; margin-top: 10px;">
+    <div class="config_content_block">
+      <div class="btn_block">
+        <div class="open_side_bar_btn">
+          <i class="fa-solid fa-sliders"></i>
+        </div>
+        <div class="open_script_modal_btn">
+          <i class="fa-solid fa-code"></i>
+        </div>
+      </div>
+      <div class="template-container">
+        <div class="admin_page_overlay show_mobile"></div>
 
-      <div class="side_bar">
-        <div class="side_bar_header">
-          <h2 class="side_bar-account_name">NHH</h2>
-          <div class="side_bar_header-nav">
-            <i class="fa-solid fa-gear open_setting_btn"></i>
-            <div class="side_bar_header-exit">
-              <i class="fa-solid fa-xmark"></i>
+        <div class="script_modal">
+          <div class="script_modal_header-exit">
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+          
+          <div class="script_modal_header">
+            <h2>Lệnh nhận thông báo</h2>
+            <div class="script_modal_copy_btn">
+              <i class="fa-solid fa-copy"></i>
             </div>
           </div>
-        </div>
-        <h3>Form</h3>
-        <ul class="form_list">
-          <!-- <li class="form_item selected">Dashboard</li>
-          <li class="form_item ">form 2</li>
-          <li class="form_item ">form 3</li> -->
-        </ul>
-        <button>➕ Thêm Form</button>
-      </div>
+          <br>
 
-      <div class="account_controller active">
-        <h2>Tùy chỉnh tài khoản</h2>
-        <br>
-        <div class="warper form_info_box">
-          <div class="join_code_block">
-            <h3>Mã mời</h3><br>
-            <div class="copy_join_code"><i class="fa-solid fa-copy"></i></div>
+          <pre><code class="language-js">
+<!-- function sendMessage(e) {
+    var sheet = e.source.getActiveSheet();
+    var lastRow = sheet.getLastRow();
+    var lastColumn = sheet.getLastColumn();
+    var headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+    var rowData = sheet.getRange(lastRow, 1, 1, lastColumn).getValues()[0];
+
+    var payload = {
+        info: { rowData: rowData, headerData: headers },
+        formId: "${this.current_form.formId}",
+    };
+
+    var options = {
+        method: "post",
+        contentType: "application/json",
+        payload: JSON.stringify(payload),
+        muteHttpExceptions: true,
+    };
+
+    Logger.log(UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/webhook/${this.current_form.formName}", options).getContentText());
+} -->
+          </code></pre>
+          
+          <div class="script_modal_guide_btn">Hướng Dẫn Sử Dụng</div>
+
+        </div>
+
+        <div class="admin_side_bar show">
+          <div class="admin_side_bar_header">
+            <h2 class="admin_side_bar-account_name">NHH</h2>
+            <div class="admin_side_bar_header-nav">
+              <i class="fa-solid fa-gear open_setting_btn"></i>
+              <div class="admin_side_bar_header-exit">
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+            </div>
           </div>
-          <div class="join_code"></div>
-        </div>
-      </div>
-
-      <div class="form_config_controller">
-        <h2>Tùy chỉnh thông tin form</h2>
-        <div class="warper form_info_box">
-          <h3>Tên form</h3><br>
-          <input type="text" class="form_info_name" placeholder="Form 1">
-        </div>
-
-        <h2>Xem mẫu tin nhắn</h2>
-        <div class="warper sheet_connect_box" id="sheet-connect">
-          <h3>Kết nối Google Sheet</h3><br>
-          <input type="text" id="sheet-id" placeholder="Spreadsheet ID" style="padding:8px; width:200px; outline: none;">
-          <input type="text" id="sheet-name" placeholder="Sheet name" style="padding:8px; width:150px;">
-          <button class="fetch_header_btn">Lấy header</button>
-        </div>
-
-        <div class="warper">
-          <h3>Headers (cột) từ Google Sheet (nhập thủ công demo):</h3><br>
-          <input type="text" id="header-input" placeholder="VD: Họ tên">
-          <button class="add_header_btn">Thêm header</button>
-        </div>
-
-        <div class="warper fixed-header-settings">
-          <h3>Tuỳ chỉnh header phần cố định</h3><br>
-          <div class="fixed-setting-item">
-            <label>Header Họ tên</label>
-            <select id="fixed-ho-ten-header"></select>
-          </div>
-          <div class="fixed-setting-item">
-            <label>Header Hạng mục</label>
-            <select id="fixed-hang-muc-header"></select>
-          </div>
-        </div>
-
-        <button class="add-field">➕ Thêm field</button>
-        <div id="fields-area">
-          <!-- <input type="text" placeholder="Label hiển thị" class="field-label">
-          <select class="field-header"></select>
-          <select class="field-range"></select>
-          <button class="remove">X</button> -->
-        </div>
-
-        <hr><br>
-
-        <div class="warp">
-          <h3>Tùy chỉnh kiểu form</h3><br>
-          <ul class="form_style_list">
-            <li class="form_style_item selected" data-type="message">message</li>
-            <li class="form_style_item" data-type="list">list</li>
+          <h3>Form</h3>
+          <ul class="form_list">
+            <!-- <li class="form_item selected">Dashboard</li>
+            <li class="form_item ">form 2</li>
+            <li class="form_item ">form 3</li>
+            <li class="form_item ">form 3</li> -->
           </ul>
+          <button>➕ Thêm Form</button>
         </div>
 
-        <button class="show-message">Hiển thị tin nhắn mẫu</button>
-
-        <div id="message-display">
-          <!-- <div class="message-box">
-            <div class="fixed-item">
-              <div class="fixed-label name">Họ tên</div>
-              <div class="fixed-label">Hạng mục</div>
+        <div class="account_controller active">
+          <h2>Tùy chỉnh tài khoản</h2>
+          <br>
+          <div class="warper form_info_box">
+            <div class="join_code_block">
+              <h3>Mã mời</h3><br>
+              <div class="copy_join_code"><i class="fa-solid fa-copy"></i></div>
             </div>
-            <div class="message-content_list hidden">
-
-            </div>
-          </div> -->
-
-          <!-- <div class="message_list">
-            <ul class="message_title">
-              <li class="message_title-item" data-range="20%">Name</li>
-              <li class="message_title-item" data-range="20%">Phone</li>
-              <li class="message_title-item" data-range="20%">Country</li>
-              <li class="message_title-item" data-range="20%">Last Update</li>
-              <li class="message_title-item" data-range="20%">Action</li>
-            </ul>
-            <ul class="message_list_content">
-              <li class="message_item">
-                <div class="message_item_value">Lê Tuấn Vũ</div>
-                <div class="message_item_value">0345613927</div>
-                <div class="message_item_value">VIỆT NAM</div>
-                <div class="message_item_value">27/02/2008</div>
-                <div class="message_item_value">BRUH I DONT KNOW</div>
-              </li>
-            </ul>
-          </div> -->
-
+            <div class="join_code"></div>
+          </div>
         </div>
 
-        <div class="save_box">
-          <div class="clear_change_btn">Bỏ thay đổi</div>
-          <div class="save_btn">Lưu</div>
+        <div class="form_config_controller">
+          <h2>Tùy chỉnh thông tin form</h2>
+          <div class="warper form_info_box">
+            <h3>Tên form</h3><br>
+            <input type="text" class="form_info_name" placeholder="Form 1">
+          </div>
+
+          <div class="warper sheet_connect_box" id="sheet-connect">
+            <h3>Kết nối Google Sheet</h3><br>
+            <input type="text" id="sheet-id" placeholder="Spreadsheet ID" style="padding:8px; width:200px; outline: none;">
+            <input type="text" id="sheet-name" placeholder="Sheet name" style="padding:8px; width:150px;">
+            <button class="fetch_header_btn">Lấy header</button>
+          </div>
+
+          <div class="warper">
+            <h3>Headers (cột) từ Google Sheet (nhập thủ công demo):</h3><br>
+            <input type="text" id="header-input" placeholder="VD: Họ tên">
+            <button class="add_header_btn">Thêm header</button>
+          </div>
+
+          <div class="warper fixed-header-settings">
+            <h3>Tuỳ chỉnh header phần cố định</h3><br>
+            <div class="fixed-setting-item">
+              <label>Header thời gian</label>
+              <select id="fixed-time-header"></select>
+            </div>
+            <div class="fixed-setting-item">
+              <label>Header người gửi</label>
+              <select id="fixed-name-header"></select>
+            </div>
+            <div class="fixed-setting-item">
+              <label>Header cho bộ lọc</label>
+              <select id="fixed-category-header"></select>
+            </div>
+          </div>
+
+          <div class="warper">
+            <h3>Tuỳ chỉnh header ở thân</h3><br>
+            <button class="add-field">➕ Thêm field</button>
+            <div id="fields-area">
+            </div>
+          </div>
+
+          <!-- ####### Cái này làm sau #######-->
+          <!-- <div class="warper">
+            <h3>Tùy chỉnh kiểu form</h3><br>
+            <ul class="form_style_list">
+              <li class="form_style_item selected" data-type="message">message</li>
+              <li class="form_style_item" data-type="list">list</li>
+            </ul>
+          </div> -->
+
+          <hr><br>
+
+          <h2>Xem mẫu tin nhắn</h2><br>
+
+          <button class="show-message">Hiển thị tin nhắn mẫu <i class="fa-solid fa-rotate"></i></button>
+
+          
+
+          <div id="message-display">
+            <!-- ... -->
+          </div>
+
+          
+
+          <div id="message-display-mobile">
+            <!-- <div class="message-box-mobile">
+                <div class="message-mobile-header">
+                  <div class="message-mobile-name">user name</div>
+                  <div class="message-mobile-status">Hạng mục</div>
+                </div>
+                <input hidden type="checkbox" id="detail_btn_1">
+                <div class="message-mobile-details">
+                  <div class="detail-row">
+                    <div class="label">Plane ID</div>
+                    <input hidden type="checkbox" name="" id="row_1">
+                    <div tabindex="0" class="value">
+                      <label for="row_1" class="default_value need_extend">value</label>
+                      <div class="extend_value">value</div>
+                    </div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="label">Offer Date</div>
+                    <input hidden type="checkbox" name="" id="row_2">
+                    <div tabindex="0" class="value">
+                      <label for="row_2" class="default_value">value2</label>
+                      <div class="extend_value"></div>
+                    </div>
+                  </div>
+                  <div class="detail-row">
+                    <div class="label">Pre-Approved</div>
+                    <label class="value">Yes</label>
+                  </div>
+                  <div class="detail-row">
+                    <div class="label">Expiration Date</div>
+                    <label class="value">4/2/2021</label>
+                  </div>
+                  <div class="detail-row">
+                    <div class="label">Expiration Date</div>
+                    <label class="value">4/2/2021</label>
+                  </div>
+                  <div class="detail-row">
+                    <div class="label">Expiration Date</div>
+                    <label class="value">4/2/2021</label>
+                  </div>
+                </div>
+                <div class="message-mobile-footer">
+                  <label for="detail_btn_1" class="see-detail-button">Chi tiết</label>
+                  <button class="isHandled-button">Chưa xử lý</button>
+                </div>
+            </div> -->
+          </div>
+
+          <div class="save_box">
+            <div class="clear_change_btn">Bỏ thay đổi</div>
+            <div class="save_btn">Lưu</div>
+          </div>
         </div>
       </div>
     </div>
@@ -160,6 +251,7 @@
         animation: 150
     });
   </script>
+  <!-- <script>hljs.highlightAll();</script> -->
   <script type="module" src="/script/adminPage/configMessageController.js"></script>
   <script type="module" src="/script/adminPage/formController.js"></script>
   <script type="module" src="/script/adminPage/adminPageHandler.js"></script>

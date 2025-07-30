@@ -1,6 +1,6 @@
 import { FirebaseAdminControler } from "./function/firebaseAdmin";
 import { SheetController } from "./function/sheet";
-import { FormSubmitHandler } from "./function/formSubmit";
+import { FormRequestHandler } from "./function/formRequestHandler";
 import { SecurityCheck } from "./function/securityCheck";
 
 import path from 'path';
@@ -31,7 +31,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
-const formSubmitHandler: FormSubmitHandler = new FormSubmitHandler();
+const formRequestHandler: FormRequestHandler = new FormRequestHandler();
 const securityCheck = new SecurityCheck();
 const accountHandler = new AccountHandler();
 const sessionController = new SessionController();
@@ -39,15 +39,12 @@ const sessionController = new SessionController();
 const JWTAuth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
-  console.log("authHeader: " + authHeader)
-
   if (!authHeader) return res.status(401).json({ error: "No token provided" });
 
   const token = authHeader.split(" ")[1];
   const JWT_SECRET = process.env.JWT_SECRET
   if(!JWT_SECRET) return res.json({mess: "err"})
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    console.log(err)
     if (err) return res.status(403).json({ error: "Invalid token or token exprired" });
 
     // ✅ Lưu user info vào req.user
@@ -74,12 +71,9 @@ app.get('/api/', (req, res) => {
 
 app.post('/api/register-token', JWTAuth, async (req, res) => {
     const { token } = req.body;
-
-    console.log(token)
     // fdb.collection("client_token").add({token: token})
 
     const userState = res.locals.userState
-    console.log(userState)
     if(userState) {
       let firebase = FirebaseAdminControler.getInstance();
       // firebase.createDocument("client_token",{token})
@@ -108,7 +102,7 @@ app.post('/api/webhook/:userName', async (req, res) => {
       res.sendStatus(403);
     }
 
-    await formSubmitHandler.handleSubmit(info, userName, formId);
+    await formRequestHandler.handleSubmit(info, userName, formId);
     
     res.send("ok");
   } catch(err) {
@@ -143,15 +137,29 @@ app.get('/api/get-form-request', JWTAuth, async (req, res) => {
   } catch(err) {
     res.status(500).json({message: "international error, cannot get form request"})
   }
-
-  // let csvcRequestData = await firebase.queryDocuments("csvc_request", (ref) => ref.where("is_handled","==",false))
-  // let studentRequestData = await firebase.queryDocuments("student_request", (ref) => ref.where("is_handled","==",false))
-
-  // res.json({
-  //   csvc: csvcRequestData,
-  //   student: studentRequestData,
-  // })
 });
+
+app.post("/api/processing_notify", JWTAuth, async (req,res) => {
+  try {
+    const userState = res.locals.userState
+    if(userState) {
+      const { id_list,action_type} = req.body
+      // await 
+      if(action_type === "handled") {
+        await formRequestHandler.Processing(id_list)
+      } else if(action_type === "delete") {
+        await formRequestHandler.Delete(id_list)
+      }
+      
+      res.status(200).json()
+    } else {
+      res.status(403).json({message: "bạn chưa có tài khoản"})
+    }
+  } catch(err) {
+    console.error(err)
+    res.status(500).json({message: "internationcal error"})
+  }
+})
 
 app.post('/api/login', async (req,res) => {
   try {
@@ -212,15 +220,9 @@ app.post('/api/login_as_member', async (req,res) => {
 })
 
 app.post('/api/logout', async (req,res) => {
-  const sessionId = req.cookies.sessionId;
-  if (sessionId) {
-    const firebase = FirebaseAdminControler.getInstance();
-    await firebase.deleteDocument("sessions", sessionId);
-  }
-
-  res.clearCookie("sessionId", {
+  res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "strict"
   });
   res.json({ message: "Logged out" });
@@ -241,10 +243,20 @@ app.post('/api/signup', async (req,res) => {
 })
 
 
+app.get('/api/verify_token', JWTAuth, async (req,res) => {
+  try {
+    const useState = res.locals.userState
+
+    res.json(useState)
+  }
+  catch(err) {
+    console.error("unvalid session state request: ",err)
+    res.status(500).json({ error: err });
+  }
+})
+
 app.get('/api/get_account', JWTAuth, async (req,res) => {
   try {
-
-    console.log()
     const useState = res.locals.userState
 
     if(useState.role === "member") res.sendStatus(403)
@@ -310,42 +322,6 @@ app.use(express.static(path.join(__dirname, '../public')));
     // Initialize Firebase Admin Controller
     let firebase = FirebaseAdminControler.getInstance();
     await firebase.initialize(keyPath);
-
-    // let account = await firebase.getDocument("User", "Rr0qAwaUUYnX7oLjxf6K")
-    // let data = {
-    //   userName: 'NHH',
-    //   email: 'ngovipmo1@gmail.com',
-    //   // memberPassword: 'NHH2@',
-    //   password: 'adminNHh2@',
-    //   forms: [ { 
-    //     formName: 'csvc', 
-    //     config: {
-    //       filterKeys: ["category"],
-    //       convertedHeader: {
-    //         fixedHeader: {
-    //           name: "Họ tên người báo tin",
-    //           category: "Hạng mục",
-    //         },
-    //         laybelHeader: {
-    //           "Dấu thời gian": "time",
-    //           "Địa điểm(tại lớp nào hoặc nơi nào)": "place",
-    //           "mô tả tình trạng hư hỏng": "who",
-    //         },
-    //       },
-    //       messageType: "normal_message",
-    //       sheetHeader: [
-    //         "Dấu thời gian",
-    //         "Hạng mục",
-    //         "Địa điểm(tại lớp nào hoặc nơi nào)",
-    //         "mô tả tình trạng hư hỏng",
-    //         "Họ tên người báo tin",
-    //       ]
-    //     }, 
-    //     formId: 'NHH-csvc' 
-    //   } ],
-    // }
-
-    // await firebase.setDocument("User", "Rr0qAwaUUYnX7oLjxf6K", data)
 
     console.log("Firebase controller initialized");
 

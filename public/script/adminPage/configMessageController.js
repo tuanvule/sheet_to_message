@@ -1,4 +1,4 @@
-import { fetchWithAuth } from "../../main.js"
+import { fetchWithAuth } from "../uti/func.js"
 import { formController } from "./formController.js"
 
 const $ = document.querySelector.bind(document)
@@ -28,14 +28,13 @@ export const configMessageController = {
             this.sheetHeader = []
             this.form = form_data
             this.originForm = form_data
-            console.log(this.form)
             
             // this.config = {...form_data.config}
             // this.fieldCount = this.config.convertedHeader.fixedHeader.length
             // this.convertedHeader = this.config.convertedHeader
             // this.sheetHeader = this.config.sheetHeader
             Object.keys(this.form.config.convertedHeader.laybelHeader).forEach((header) => this.addField());
-            this.LoadConfigType(this.form.config.messageType)
+            // this.LoadConfigType(this.form.config.messageType)
             this.LoadFormInfo()
             this.UpdateAllSelects()
             this.LoadAllField()
@@ -48,22 +47,9 @@ export const configMessageController = {
     },
 
     LoadConfigType(type) {
-        const allWarper = $$(".warper")
-        allWarper.forEach((ele,i) => {
-            if(i>2) {
-                ele.style.display = "none"
-            }
-        })
-        switch(type) {
-            case "message":
-                $(".fixed-header-settings").style.display = "block";
-                break
-            case "list":
-                break
-            default:
-                break
-        }
-
+        const form_style_items = $$(".form_style_item")
+        form_style_items.forEach(ele => ele.classList.remove("selected"))
+        $(`.form_style_item[data-type="${type}"]`).classList.add("selected")
         this.form.config.messageType = type
     },
 
@@ -71,7 +57,6 @@ export const configMessageController = {
         const message_boxes = $$(".fixed-item")
 
         message_boxes.forEach(e => {
-            console.log(e)
             e.onclick = () => {
                 e.parentElement.classList.toggle("opened")
                 e.parentElement.querySelector(".message-content_list").classList.toggle("hidden")
@@ -80,8 +65,6 @@ export const configMessageController = {
 
         const add_header_btn = $(".add_header_btn")
         add_header_btn.onclick = (e) => {
-            console.log(21321)
-            console.log(this.headers)
             e.preventDefault()
             this.addHeader()
         }
@@ -104,10 +87,25 @@ export const configMessageController = {
             item.onclick = () => {
                 form_style_items.forEach(ele => ele.classList.remove("selected"))
                 item.classList.add("selected")
-                this.LoadConfigType(item.dataset.type)
+                // this.LoadConfigType(item.dataset.type)
                 this.ShowExampleMessage()
             }
         })
+
+        $$(".detail-row .value").forEach(ele => {
+            ele.onblur = () => {
+                console.log("blur")
+                ele.parentElement.querySelector('input[type="checkbox"]').checked = false
+            }
+        })
+
+        const see_detail_btns = $$(".see-detail-button")
+        see_detail_btns.forEach(ele => {
+            ele.onclick = () => {
+                ele.classList.toggle("active")
+            }
+        })
+
 
         const save_btn = $(".save_btn")
         const clear_change_btn = $(".clear_change_btn")
@@ -135,13 +133,13 @@ export const configMessageController = {
                 this.headers.forEach(() => that.addField());
                 this.form.config.sheetHeader = this.headers
                 this.UpdateAllSelects();
-                console.log(json);
             });
     },
 
     LoadFixedHeader() {
-        document.getElementById('fixed-ho-ten-header').selectedIndex = this.form.config.sheetHeader.findIndex(value => value == this.form.config.convertedHeader.fixedHeader.name);
-        document.getElementById('fixed-hang-muc-header').selectedIndex = this.form.config.sheetHeader.findIndex(value => value == this.form.config.convertedHeader.fixedHeader.category);
+        document.getElementById('fixed-time-header').selectedIndex = this.form.config.sheetHeader.findIndex(value => value == this.form.config.convertedHeader.fixedHeader.time);
+        document.getElementById('fixed-name-header').selectedIndex = this.form.config.sheetHeader.findIndex(value => value == this.form.config.convertedHeader.fixedHeader.name);
+        document.getElementById('fixed-category-header').selectedIndex = this.form.config.sheetHeader.findIndex(value => value == this.form.config.convertedHeader.fixedHeader.category);
     },
 
     addHeader() {
@@ -159,7 +157,6 @@ export const configMessageController = {
         selects.forEach((select, i) => {
             select.parentElement.querySelector(".field-range").selectedIndex = Number(this.form.config.convertedHeader.laybelHeader[i].range.replace("%","")) / 10 - 1
             select.selectedIndex = this.form.config.sheetHeader.findIndex(value => value === this.form.config.convertedHeader.laybelHeader[i].laybel)
-            console.log(select.value)
             select.parentElement.querySelector(".field-label").value = this.form.config.convertedHeader.laybelHeader[i].key
         })
     },
@@ -198,12 +195,10 @@ export const configMessageController = {
     UpdateFieldRange() {
         const fieldRangeElements = $$(".field-range")
         const rangeList = Array.from(fieldRangeElements).map(ele => ele.value)
-        console.log(this.form.config.convertedHeader)
         const newLaybelHeader = this.form.config.convertedHeader.laybelHeader.map((obj,i) => {
             const { laybel, key, _ } = obj
             return { laybel, key, range: rangeList[i]}
         })
-        console.log(newLaybelHeader)
     },
 
     removeField(id) {
@@ -218,8 +213,9 @@ export const configMessageController = {
         const selects = $$('.field-header');
         selects.forEach(select => this.updateSelect(select));
 
-        this.updateSelect(document.getElementById('fixed-ho-ten-header'));
-        this.updateSelect(document.getElementById('fixed-hang-muc-header'));
+        this.updateSelect(document.getElementById('fixed-time-header'));
+        this.updateSelect(document.getElementById('fixed-name-header'));
+        this.updateSelect(document.getElementById('fixed-category-header'));
     },
 
     updateSelect(select) {
@@ -255,6 +251,44 @@ export const configMessageController = {
         html += `</div></div>`;
         
         document.getElementById('message-display').innerHTML = html;
+    },
+
+    RenderMobileMessage() {
+        const fields = $$('.field-item');
+
+        let htmlMobile = `
+            <br><h3>Mobile</h3><br>
+            <div class="message-box-mobile">
+                <input hidden type="checkbox" id="detail_btn_1">
+                <div class="message-mobile-header">
+                  <div class="message-mobile-name">user name</div>
+                  <div class="message-mobile-status">Hạng mục</div>
+                </div>
+                <div class="message-mobile-details">
+        `;
+        
+        fields.forEach((field, i) => {
+            const label = field.querySelector('.field-label').value || 'No label';
+            const header = field.querySelector('.field-header').value;
+            htmlMobile += `
+                <div class="detail-row">
+                    <div class="label">${label}</div>
+                    <input hidden type="checkbox" name="" id="row_${i}">
+                    <div tabindex="0" class="value">
+                      <label for="row_${i}" class="default_value ${i===0 && "need_extend"}">${label + " demo"}</label>
+                      <div class="extend_value">${label + " demo" + " mở rộng"}</div>
+                    </div>
+                </div>`;
+        });
+        htmlMobile += `</div>
+                            <div class="message-mobile-footer">
+                                <label for="detail_btn_1" class="see-detail-button">Chi tiết</label>
+                                <button class="isHandled-button">Đánh dấu</button>
+                            </div>
+                        </div>`;
+        
+        document.getElementById('message-display-mobile').innerHTML = htmlMobile;
+
         this.HandleEvent();
     },
 
@@ -263,6 +297,7 @@ export const configMessageController = {
         const sampleData = {}; // Dữ liệu mẫu
         this.headers.forEach(h => sampleData[h] = h + " demo");
         let html = `
+        <br><br><h3>Window</h3><br>
         <div class="message_list">
           <ul class="message_title">
             ${fields.map(field => {
@@ -289,7 +324,9 @@ export const configMessageController = {
     ShowExampleMessage() {
         switch(this.form.config.messageType) {
             case "message":
-                this.RenderMessageType()
+                // this.RenderMessageType()
+                this.RenderListType()
+
                 break
             case "list":
                 this.RenderListType()
@@ -298,5 +335,6 @@ export const configMessageController = {
                 this.RenderMessageType()
                 break
         }
+        this.RenderMobileMessage()
     },
 }

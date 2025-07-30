@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>NHH CSVC</title>
+    <title>NHH Notifi</title>
     <link rel="manifest" href="/manifest.json"> 
     <link rel="icon" href="nhh512.png" type="image/png"> 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,41 +10,307 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="style/popupNotification.css">
     <link rel="stylesheet" href="style/notification.css">
-    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/homePage.css">
+    <!-- <link rel="stylesheet" href="style/main.css"> -->
+    <link rel="stylesheet" href="style/responsive.css">
     <!-- <link rel="stylesheet" href="style/responsive.css"> -->
 </head>
 <body>
   <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js" type="module"></script>
   <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-messaging.js" type="module"></script>
 
-  <!-- hộp đăng ký nhận thông báo(notificaiton) -->
-  <div class="register_box">
-    <h1 class="title">Công cụ thông báo CSVC - NHH</h1>
-    <div id="btn-getPerm">Lấy thông tin / đăng kí thiết bị</div>
-    <div class="check_is_support">
-      <div id="support-icon"></div>
-      <div id="fcm-tok"></div>
+  <input hidden type="checkbox" id="menu" value="">
+
+  <div class="sidebar">
+    <div class="sidebar_pc">
+      <nav class="nav_pc">
+        <div class="sidebar_heading">
+          <label for="menu" class="menu_button"><i class="fa-solid fa-bars menu_icon-btn"></i></label>
+          <span class="sidebar_title">NHH Notify</span>
+        </div>
+        <ul class="sidebar_menu">
+          <li class="sidebar_item active" data-pagetype="homePage"><a href="#"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
+          <!-- <li><a href="#"><i class="fa-solid fa-chart-line"></i> Giới thiệu</a></li> -->
+
+          <li class="sidebar_item sidebar_parent notifications_parent" data-pagetype="notificationPage">
+            <a href="#" class="sidebar_toggle"><i class="fa-solid fa-bell"></i> Thông báo</a>
+            <ul class="sidebar_submenu notifications_submenu">
+              <li class="notifications_submenu_item active"><i class="fa-solid fa-file-lines"></i> GGForm 1</li>
+              <li class="notifications_submenu_item"><i class="fa-solid fa-file-lines"></i> GGForm 2</li>
+              <li class="notifications_submenu_item"><i class="fa-solid fa-file-lines"></i> GGForm 3</li>
+            </ul>
+          </li>
+
+          <li class="sidebar_item"><a href="/admin"><i class="fa-solid fa-gear"></i> Settings</a></li>
+          <li class="sidebar_item"><a href="#"><i class="fa-solid fa-circle-question"></i> Trợ giúp</a></li>
+        </ul>
+      </nav>
     </div>
+
   </div>
 
 
+  <!-- navbar -->
+  <div class="navbar">
+    <div class="navbar_left">
+      <!-- Đã di chuyển nút menu và chữ sang sidebar_heading -->
+      <label for="menu" class="menu_icon">
+        <i class="fa-solid fa-bars menu_icon-btn"></i>
+      </label>
+      <span class="navbar_title">NHH Notify</span>
+    </div>
+    <div class="navbar_right">
+      <input type="text" class="search_input" placeholder="Search">
+      <div class="navbar_icon">
+        <i class="fa-solid fa-magnifying-glass search_icon"></i>
+      </div>
+      <div class="navbar_btns">
+        <div class="navbar_btns-logout">Logout</div>
+        <div class="navbar_btns-signup">Sign up</div>
+        <a href="/login" class="navbar_btns-login">Login</a>
+      </div>
+      <img class="profile_avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile">
+    </div>
+  </div>
+
+  <div class="main_content">
+
+    <!-- hộp đăng ký nhận thông báo(notificaiton) -->
+    <div class="page home_page active">
+      <div class="register_box">
+        <h1 class="title">Công cụ thông báo NHH Notify</h1>
+        <button id="btn-getPerm">Lấy thông tin / đăng kí thiết bị</button>
+        <div class="check_is_support">
+          <div id="support-icon"></div>
+          <div id="fcm-tok"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- render ra mấy cái thông báo nhận được -->
+    <div class="page notification_page">
+      <h1 class="notification_title">Thông báo</h1>
+      <div class="no_request_title hide">Chưa có thông báo nào</div>
+      <div class="notifications_box">
+        <div class="filter-container">
+          <div class="top-bar">
+            <h2>Bộ Lọc</h2>
+            <!-- <a href="#" class="reset-link">Reset All</a> -->
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-left">
+              <!-- <label>Select by country</label>
+              <div class="select-wrapper">
+                <div class="custom-dropdown" id="filterSelect" tabindex="0">
+                  <button class="dropdown-toggle">Select By Country ▾</button>
+                  <div class="dropdown-menu" id="countryDropdown">
+                    <label><input type="checkbox" name="country" value="Spain"> Spain</label>
+                    <label><input type="checkbox" name="country" value="Italy"> Italy</label>
+                    <label><input type="checkbox" name="country" value="Germany"> Germany</label>
+                    <label><input type="checkbox" name="country" value="UK"> UK</label>
+                    <label><input type="checkbox" name="country" value="USA"> USA</label>
+                  </div>
+                </div>
+                <a href="#" class="clear-link">Clear</a>
+              </div> -->
+            </div>
+
+            <div class="filter-right">
+              <!-- <label>Search contacts</label> -->
+              <br>
+              <div class="search-group">
+                <!-- <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" placeholder="Search here..." />
+                </div> -->
+                <div class="sort-dropdown" id="sortSelect" tabindex="0">
+                  <button class="sort-toggle">Sort by ▾</button>
+                  <div class="sort-menu" id="sortMenu">
+                    <!-- <div class="sort-option">Name (A/Z)</div>
+                    <div class="sort-option">Name (Z/A)</div> -->
+                    <div class="sort-option selected" data-type="newest">mới nhất</div>
+                    <div class="sort-option" data-type="oldest">cũ nhất</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filting-bar">
+            <span class="highlight">Filtering by:</span>
+            <!-- <div class="fiting-box">
+              <div class="filting_item">
+                Bàn học 
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+            </div> -->
+          </div>
+
+
+          <div class="action-bar"><br>
+            <h3 class="action-bar-title">Xử lý thông báo</h3>
+            <br>
+            <div class="action-bar_btn">
+              <div class="action-bar_btn-left">
+                <div class="handled_btn">Hoàn thành</div>
+                <div class="delete_btn">Xóa</div>
+              </div>
+              <div class="action-bar_btn-right">
+                <div class="confirm_btn">Xác nhận</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notification_pc">
+          <table class="notification_table">
+            <thead>
+              <tr>
+                  <th class="notification_table-heading">Họ tên</th>
+                  <th class="notification_table-heading">Lớp</th>
+                  <th class="notification_table-heading">Thời gian</th>
+                  <th class="notification_table-heading">Thiết bị</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="notification_table-row">
+                <!-- <td><img class="avatar" src="https://randomuser.me/api/portraits/men/2.jpg" alt="avatar"></td> -->
+                <td>Nguyễn Văn A</td>
+                <td>10A8</td>
+                <td>25-12-2025</td>
+                <td>Bàn học Nghe bài Trình của HTH xong tôi ko thể nghe bài này theo cách bình thường đc :))). Nhưng ko thể phủ nhận bài này rất hay.</td>
+              </tr>
+              <tr class="notification_table-row">
+                <td>Nguyễn Văn A</td>
+                <td>10A8</td>
+                <td>25-12-2025</td>
+                <td>Bàn học</td>
+              </tr>
+              <tr class="notification_table-row">
+                <td>Nguyễn Văn A</td>
+                <td>10A8</td>
+                <td>25-12-2025</td>
+                <td>Bàn học</td>
+              </tr>
+              <!-- ...add more rows as needed... -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="notification_mobile">
+
+        </div>
+        
+        <!-- <div class="notification_mobile">
+          <div class="notification_mobile-header">
+            <div class="notification_mobile-header-name">essdfsdfsf</div>
+            <div class="notification_mobile-header-category">dsfsdfs</div>
+          </div>
+          <input hidden type="checkbox" id="detail_btn_1">
+          <ul class="notification_mobile-list">
+            <li class="notification_mobile-item">
+              <div class="notification_mobile-label">asdasddf</div>
+              <div class="notification_mobile-value">
+                <label for="value_btn-0" class="notification_mobile-value-default">dsfsfsef</label>
+                <input hidden type="checkbox" name="" id="value_btn-0">
+                <div class="notification_mobile-value-extended">eeeeee</div>
+              </div>
+            </li>
+  
+            <li class="notification_mobile-item">
+              <div class="notification_mobile-label">asdasddf</div>
+              <div class="notification_mobile-value">dsfsdfsdf</div>
+            </li>
+  
+            <li class="notification_mobile-item">
+              <div class="notification_mobile-label">asdasddf</div>
+              <div class="notification_mobile-value">dsfsdfsdf</div>
+            </li>
+  
+          </ul> 
+          <div class="notification-mobile-footer">
+            <label for="detail_btn_1" class="notification-mobile-footer-detail">Chi tiết</label>
+            <div class="notification-mobile-footer-ishandled">sdafsdf</div>
+          </div>
+        </div> -->
+
+         <!-- <div class="notification_mobile">
+            <div class="notification_mobile-header">
+              <div class="notification_mobile-header-name">user name</div>
+              <div class="notification_mobile-header-category">Hạng mục</div>
+            </div>
+            <input hidden type="checkbox" id="detail_btn_1">
+            <ul class="notification_mobile-list">
+              <li class="notification_mobile-item">
+                <div class="label">Plane ID</div>
+                <input hidden type="checkbox" name="" id="row_1">
+                <div tabindex="0" class="value">
+                  <label for="row_1" class="default_value need_extend">value</label>
+                  <div class="extend_value">value</div>
+                </div>
+              </li>
+              <li class="notification_mobile-item">
+                <div class="label">Offer Date</div>
+                <input hidden type="checkbox" name="" id="row_2">
+                <div tabindex="0" class="value">
+                  <label for="row_2" class="default_value">value2</label>
+                  <div class="extend_value"></div>
+                </div>
+              </li>
+              <li class="notification_mobile-item">
+                <div class="label">Pre-Approved</div>
+                <label class="value">Yes</label>
+              </li>
+              <li class="notification_mobile-item">
+                <div class="label">Expiration Date</div>
+                <label class="value">4/2/2021</label>
+              </li>
+              <li class="notification_mobile-item">
+                <div class="label">Expiration Date</div>
+                <label class="value">4/2/2021</label>
+              </li>
+              <li class="notification_mobile-item">
+                <div class="label">Expiration Date</div>
+                <label class="value">4/2/2021</label>
+              </li>
+            </ul>
+            <div class="notification-mobile-footer">
+              <label for="detail_btn_1" class="notification-mobile-footer-detail">Chi tiết</label>
+              <button class="notification-mobile-footer-ishandled">Chưa xử lý</button>
+            </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
 
   <!-- 
     - hiển thị loading khi yêu cầu lấy token từ server 
     - vào style/popupNotification.css
     - tại class .popupNotification cho display = block để hiển thị 
   -->
+  <!-- <div class="popupNotification">
+    <div class="popupNotification_main">
+      <div class="popupNotification_exit"><i class="fa-solid fa-x"></i></div>
 
+      <div class="popupNotification_result loading">
+        <div class="loader"></div>
+        <div class="success"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="fail"><i class="fa-solid fa-circle-xmark"></i></div>
+      </div>
 
-  <div class="login_form"></div>
-
-  <div class="navigator">
-    <div class="admin_pagge_btn"><a href="/public/admin.html">Admin</a></div>
-    <div class="login_btn"><a href="/public/login.html">Login</a></div>
+      <h2 class="popupNotification_message">Get Perm successfully</h2>
+      <h3 class="token_show"> 
+        <div class="token_show_title">Your token is:</div>
+        <div class="token_show_token"></div>
+      </h3>
+    </div>
   </div>
-
+   -->
+  <!-- <p>New version</p> -->
 </body>
-<script type="module" src="/script/renderFormRequest.js"></script>
+<script type="module" src="/script/renderFormRequestHandler.js"></script>
 <script type="module" src="main.js"></script>
 
 <script type="module">
@@ -137,8 +403,6 @@
 })();
   document.getElementById('fcm-tok').innerText = `Đang chờ kiểm định thiết bị`;
   async function getPerm(e) {
-    console.log("WTF")
-    // e.preventDefault()
     Notification.requestPermission().then(async (permission) => {
       popupNotification.Init("getPerm")
       popupNotification.ShowGetPermSatus("loading")
@@ -156,21 +420,12 @@
 
       }
       else{
-        console.log("tes")
         popupNotification.ShowGetPermSatus("failWithNoNotifiPerm")
           // arlet("Hệ thống không được hỗ trợ nếu không được cấp quyền thông báo, xin hãy bật quyền")
       }
 
     })
   }
-  document.querySelector("body").innerHTML += Boolean(navigator.setAppBadge)
-
-  if (navigator.setAppBadge) {
-    document.querySelector("body").innerHTML += "valid"
-    // Display the number of unread messages.
-    navigator.setAppBadge(1);
-  }
-  console.log(document.getElementById("btn-getPerm"))
   document.getElementById("btn-getPerm").addEventListener("click", getPerm)
 
   // document.querySelector(".popupNotification_exit").addEventListener("click", async (e)=> {

@@ -1,4 +1,4 @@
-import { fetchWithAuth } from "../../main.js";
+import { fetchWithAuth } from "../uti/func.js";
 import { popupNotification } from "../popupNotification.js";
 import { formController } from "./formController.js";
 
@@ -17,8 +17,6 @@ export class AdminPageHandler {
 
     async start() {
         try {
-
-            console.log(window.mobileCheck())
             const res = await fetchWithAuth("/api/get_account")
             if(res.status === 403) {
                 popupNotification.Init()
@@ -28,8 +26,8 @@ export class AdminPageHandler {
                 this.data = data
                 this.LoadUserData()
                 await formController.Init(data);
-                this.HandleEvent()
                 this.DeviceResponsive()
+                this.HandleEvent()
             }
         } catch(err) {
             console.log(err)
@@ -37,9 +35,11 @@ export class AdminPageHandler {
     }
 
     DeviceResponsive() {
-        if(!window.mobileCheck()) {
-            $(".open_side_bar_btn").style.display = "none"
-            $(".side_bar_header-exit").style.display = "none"
+        console.log(window.mobileCheck())
+        if(window.mobileCheck()) {
+            console.log($(".admin_side_bar_header-exit"))
+            $(".open_side_bar_btn").style.display = "grid"
+            $(".admin_side_bar_header-exit").style.display = "grid"
         }
     }
 
@@ -47,18 +47,52 @@ export class AdminPageHandler {
         $(".join_code").innerHTML = this.data.joinCode
     }
 
+    HandleDisplaySideBarModal(type) {
+        const admin_page_overlay_btn = $(".admin_page_overlay")
+        const side_bar = $(".admin_side_bar")
+        if(type === "show") {
+            admin_page_overlay_btn.className = "admin_page_overlay show"
+            side_bar.className = "admin_side_bar show"
+        } else {
+            admin_page_overlay_btn.className = "admin_page_overlay hide"
+            side_bar.className = "admin_side_bar hide"
+        }
+    }
+
+    HandleDisplayScriptModal(type) {
+        const admin_page_overlay_btn = $(".admin_page_overlay")
+        const script_modal = $(".script_modal")
+        if(type === "show") {
+            admin_page_overlay_btn.className = "admin_page_overlay show"
+            script_modal.className = "script_modal show"
+        } else {
+            admin_page_overlay_btn.className = "admin_page_overlay hide"
+            script_modal.className = "script_modal hide"
+        }
+    }
+
     HandleEvent() {
         const form_config_controller = $(".form_config_controller")
         const account_controller = $(".account_controller")
         const admin_page_overlay_btn = $(".admin_page_overlay")
+        const side_bar = $(".admin_side_bar")
 
         const open_setting_btn = $(".open_setting_btn")
         open_setting_btn.onclick = () => {
             account_controller.className = "account_controller active"
             form_config_controller.classList.remove("active")
             admin_page_overlay_btn.className = "admin_page_overlay hide"
+            open_script_modal_btn.style.display = "none"
+            if(window.mobileCheck()) {
+                side_bar.className = "admin_side_bar hide"
+            }
             formController.ClearChoosenForm()
         }
+
+        const open_script_modal_btn = $(".open_script_modal_btn")
+        open_script_modal_btn.onclick = () => this.HandleDisplayScriptModal("show")
+        const close_script_modal_btn = $(".script_modal_header-exit")
+        close_script_modal_btn.onclick = () => this.HandleDisplayScriptModal("hide")
 
         const copy_join_code = $(".copy_join_code")
         copy_join_code.onclick = () => navigator.clipboard.writeText($(".join_code").innerHTML)
@@ -70,15 +104,11 @@ export class AdminPageHandler {
         });
 
         if(window.mobileCheck()) {
-            const side_bar_header_exit = $(".side_bar_header-exit")
-            side_bar_header_exit.onclick = () => {
-                admin_page_overlay_btn.className = "admin_page_overlay hide"
-            }
+            const side_bar_header_exit = $(".admin_side_bar_header-exit")
+            side_bar_header_exit.onclick = () => this.HandleDisplaySideBarModal("hide")
 
             const open_side_bar_btn = $(".open_side_bar_btn")
-            open_side_bar_btn.onclick = () => {
-                admin_page_overlay_btn.className = "admin_page_overlay show"
-            }
+            open_side_bar_btn.onclick = () => this.HandleDisplaySideBarModal("show")
         }
     }
 
@@ -93,4 +123,3 @@ export class AdminPageHandler {
 
 const adminPageHandler = new AdminPageHandler();
 await adminPageHandler.start()
-

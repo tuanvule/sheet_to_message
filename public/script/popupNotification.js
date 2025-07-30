@@ -11,8 +11,6 @@ export const popupNotification = {
     no_btn: "",
     yes_btn: "",
 
-    a: 1,
-
     Reset() {
         this.popupNotification_result.className = "popupNotification_result"
         this.ShowMessage("")
@@ -241,16 +239,18 @@ export const popupNotification = {
     },
 
     Init(type) {
-        let popupHtml = ""
         switch(type) {
             case "getPerm":
                 this.AddGetPermNotificationThemplate()
+                this.GetElement("getPerm")
                 break
             case "YESNO":
                 this.AddYESNONotificationThemplate()
+                this.GetElement("YESNO")
                 break
             default: 
                 this.AddDefaultNotificationThemplate()
+                this.GetElement()
                 break
         }
         this.GetElement(type)
@@ -283,10 +283,13 @@ export const popupNotification = {
     },
 
     ShowYesNoNotification(message, callbackIfOK) {
-        if(!this.popupNotification) this.Init("YESNO")
+        // if(!this.popupNotification) this.Init("YESNO")
         this.ShowMessage(message)
         this.no_btn.onclick = () => this.Exit()
-        this.yes_btn.onclick = () => callbackIfOK()
+        this.yes_btn.onclick = () => {
+            callbackIfOK()
+            this.Exit()
+        }
     },
 
     ShowMessage(mes) {

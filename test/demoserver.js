@@ -48,8 +48,6 @@ app.post('/send-notification', async (req, res) => {
     try {
         const { title, body } = req.body || {title:"djnfvkljfd",body:"djnfvkljfdrferfer"};
 
-        console.log(title,body)
-
         // Send to all registered tokens
         const messages = Array.from(tokens).map(token => ({
             notification: {
@@ -58,8 +56,6 @@ app.post('/send-notification', async (req, res) => {
             },
             token
         }));
-
-        console.log(messages)
 
         const responses = await Promise.all(
             messages.map(message => 

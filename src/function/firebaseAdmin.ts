@@ -144,6 +144,27 @@ export class FirebaseAdminControler {
     }
   }
 
+  public async updateMultiDocument(collection: string, docIds: string[], data: any): Promise<void> {
+    this.checkInitialization();
+    const chunkSize = 500;
+    
+    try {
+      for (let i = 0; i < docIds.length; i += chunkSize) {
+        const chunk = docIds.slice(i, i + chunkSize);
+
+        await this.runBatch((batch) => {
+          for (const id of chunk) {
+            const ref = this.db!.collection(collection).doc(id);
+            batch.update(ref, data);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error update document:", error);
+      throw new Error("Failed to update multiple document");
+    }
+  }
+
   /**
    * Delete a document from Firestore
    */

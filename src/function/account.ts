@@ -82,7 +82,6 @@ export class AccountHandler {
 
             const account: StoredAccount = accounts[0];
 
-            console.log(account)
             // const sessionId = await sessionController.CreateSession(account.id, "admin");
 
             return { isSuccess: true, userId: account.id, role: "admin", userName: account.userName };
