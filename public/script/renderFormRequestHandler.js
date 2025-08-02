@@ -213,10 +213,7 @@ export class RenderFormRequestHandler {
                 })
             }
 
-            // console.log({id_list, action_type})
-            console.log(id_list)
-            console.log(this.showed_data)
-            // this.ChangeShowData()
+
             const res = await fetchWithAuth("/api/processing_notify", {
                 method: "POST",
                 body: JSON.stringify({
@@ -239,6 +236,7 @@ export class RenderFormRequestHandler {
                     }
                     return false
                 })))
+                localStorage.setItem("numberOfUnreadMessages", localStorage.getItem("numberOfUnreadMessages") - id_list.length)
             } else {
                 console.log(res)
             }

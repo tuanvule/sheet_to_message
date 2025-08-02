@@ -23,7 +23,11 @@ messaging.onBackgroundMessage((payload) => {
       icon: '/nhh512.png' // Use your icon
     };
     const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
-    localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 2)
+    if(!numberOfUnreadMessages) {
+      localStorage.setItem("numberOfUnreadMessages", 1)
+    } else {
+      localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 1)
+    }
 
     if (navigator.setAppBadge) {
       // Display the number of unread messages.
