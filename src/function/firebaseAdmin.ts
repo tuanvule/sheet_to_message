@@ -56,7 +56,9 @@ export class FirebaseAdminControler {
           notification: {
             title: payload.title,
             body: payload.body,
-            unreadCount: payload.unreadCount
+          },
+          data: {
+            unreadCount: `${payload.unreadCount}`
           },
           token
         }));
@@ -70,7 +72,10 @@ export class FirebaseAdminControler {
         const message = {
           notification: {
             title: payload.title,
-            body: payload.body
+            body: payload.body,
+          },
+          data: {
+            unreadCount: '0'
           },
           token: deviceToken
         };

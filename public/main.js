@@ -5,23 +5,12 @@ import { fetchWithAuth } from "./script/uti/func.js";
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
-const renderFormRequestHandler = new RenderFormRequestHandler()
-
-const login_btn = $(".navbar_btns-login")
-const logout_btn = $(".navbar_btns-logout")
-const signup_btn = $(".navbar_btns-signup")
-// console.log(login_btn)
-
-// const renderHandler = new RenderFormRequest();
-// await renderHandler.init();
-// renderHandler.render();
-// console.log(renderHandler.getAll());
 
   // var payload = {
   //   type: "NSP",
   //   info: {
-  //     rowData: {},
-  //     headerData: {},
+  //     rowData: [],
+  //     headerData: [],
   //   },
   //   formId: "NHH_csvc",
   // };
@@ -34,9 +23,22 @@ const signup_btn = $(".navbar_btns-signup")
   //   body: JSON.stringify(payload),
   // };
 
-  // var response = UrlFetchApp.fetch("https://sheet-to-message.vercel.app//webhook/NHH", options);
-  // Logger.log(response.getContentText());
+  // // var response = UrlFetchApp.fetch("https://sheet-to-message.vercel.app//webhook/NHH", options);
+  // // Logger.log(response.getContentText());
   // var response = fetchWithAuth("http://127.0.0.1:3092/api/webhook/NHH", options);
+
+const renderFormRequestHandler = new RenderFormRequestHandler()
+
+const login_btn = $(".navbar_btns-login")
+const logout_btn = $(".navbar_btns-logout")
+const signup_btn = $(".navbar_btns-signup")
+// console.log(login_btn)
+
+const renderHandler = new RenderFormRequest();
+await renderHandler.init();
+renderHandler.render();
+console.log(renderHandler.getAll());
+
 
 // const response = await fetchWithAuth("/api/get-form-request")
 // const data = await response.json()
@@ -53,19 +55,6 @@ const signup_btn = $(".navbar_btns-signup")
 // } else {
 //   popupNotification.Init()
 //   popupNotification.Fail(data.message)
-// }
-
-// const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
-// if(!numberOfUnreadMessages) {
-//   localStorage.setItem("numberOfUnreadMessages", 1)
-// } else {
-//   localStorage.setItem("numberOfUnreadMessages", Number(numberOfUnreadMessages) + 1)
-// }
-// // console.log(navigator.setAppBadge)
-// // document.querySelector("body").innerHTML += navigator.setAppBadge
-// if (navigator.setAppBadge) {
-//   // Display the number of unread messages.
-//   navigator.setAppBadge(1);
 // }
 
 document.addEventListener('DOMContentLoaded', () => {
