@@ -59,12 +59,13 @@ const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
 if(!numberOfUnreadMessages) {
   localStorage.setItem("numberOfUnreadMessages", 1)
 } else {
-  localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 1)
+  localStorage.setItem("numberOfUnreadMessages", Number(numberOfUnreadMessages) + 1)
 }
-
+// console.log(navigator.setAppBadge)
+// document.querySelector("body").innerHTML += navigator.setAppBadge
 if (navigator.setAppBadge) {
   // Display the number of unread messages.
-  navigator.setAppBadge(numberOfUnreadMessages+1);
+  navigator.setAppBadge(numberOfUnreadMessages ? Number(numberOfUnreadMessages) + 1 : 1);
 }
 let userState = null
 const res = await fetchWithAuth("/api/verify_token")
