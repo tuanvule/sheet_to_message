@@ -48,6 +48,7 @@ export class FirebaseAdminControler {
   public async sendNotification(payload: NotificationPayload, deviceToken: string | Array<string>) {
     console.log(payload);
     try {
+      console.log(deviceToken)
       if (Array.isArray(deviceToken)) {
         const messages = deviceToken.map(token => ({
           notification: {
