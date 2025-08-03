@@ -484,6 +484,7 @@ body {
 
 .navbar_left {
   display: flex;
+  opacity: 0;
   align-items: center;
   gap: 1rem;
 }
@@ -754,12 +755,6 @@ body {
   left: 200px; /* Đẩy navbar sang trái 100px so với sidebar 250px -> còn 150px */
   width: calc(100% - 200px); /* Điều chỉnh chiều rộng cho phù hợp */
   z-index: 1050;
-}
-
-.navbar_left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .menu_button {

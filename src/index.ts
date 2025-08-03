@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 3092;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: ["https://sheet-to-message.vercel.app","http://127.0.0.1:5500"], // frontend origin
+  origin: ["https://sheet-to-message.vercel.app","http://127.0.0.1:5500", "https://csvcnhh.namanhishere.me/"], // frontend origin
   credentials: true
 }));
 app.use(cookieParser());

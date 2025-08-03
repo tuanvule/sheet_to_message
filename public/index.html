@@ -35,13 +35,13 @@
           <li class="sidebar_item sidebar_parent notifications_parent" data-pagetype="notificationPage">
             <a href="#" class="sidebar_toggle"><i class="fa-solid fa-bell"></i> Thông báo</a>
             <ul class="sidebar_submenu notifications_submenu">
-              <li class="notifications_submenu_item active"><i class="fa-solid fa-file-lines"></i> GGForm 1</li>
+              <!-- <li class="notifications_submenu_item active"><i class="fa-solid fa-file-lines"></i> GGForm 1</li>
               <li class="notifications_submenu_item"><i class="fa-solid fa-file-lines"></i> GGForm 2</li>
-              <li class="notifications_submenu_item"><i class="fa-solid fa-file-lines"></i> GGForm 3</li>
+              <li class="notifications_submenu_item"><i class="fa-solid fa-file-lines"></i> GGForm 3</li> -->
             </ul>
           </li>
 
-          <li class="sidebar_item"><a href="/admin"><i class="fa-solid fa-gear"></i> Settings</a></li>
+          <li class="sidebar_item" data-pagetype="setting"><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
           <li class="sidebar_item"><a href="#"><i class="fa-solid fa-circle-question"></i> Trợ giúp</a></li>
         </ul>
       </nav>
@@ -66,8 +66,8 @@
       </div>
       <div class="navbar_btns">
         <div class="navbar_btns-logout">Logout</div>
-        <div class="navbar_btns-signup">Sign up</div>
-        <a href="/login" class="navbar_btns-login">Login</a>
+        <div class="navbar_btns-signup" style="display: none;">Sign up</div>
+        <a href="/public/login.html" class="navbar_btns-login">Login</a>
       </div>
       <img class="profile_avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile">
     </div>
@@ -165,7 +165,7 @@
         </div>
 
         <div class="notification_pc">
-          <table class="notification_table">
+          <!-- <table class="notification_table">
             <thead>
               <tr>
                   <th class="notification_table-heading">Họ tên</th>
@@ -176,7 +176,6 @@
             </thead>
             <tbody>
               <tr class="notification_table-row">
-                <!-- <td><img class="avatar" src="https://randomuser.me/api/portraits/men/2.jpg" alt="avatar"></td> -->
                 <td>Nguyễn Văn A</td>
                 <td>10A8</td>
                 <td>25-12-2025</td>
@@ -194,9 +193,8 @@
                 <td>25-12-2025</td>
                 <td>Bàn học</td>
               </tr>
-              <!-- ...add more rows as needed... -->
             </tbody>
-          </table>
+          </table> -->
         </div>
         
         <div class="notification_mobile">

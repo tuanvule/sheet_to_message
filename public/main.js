@@ -54,10 +54,10 @@ const signup_btn = $(".navbar_btns-signup")
 //   popupNotification.Init()
 //   popupNotification.Fail(data.message)
 // }
-
+let userState = null
 const res = await fetchWithAuth("/api/verify_token")
 if(res.status === 200) {
-  const userState = await res.json()
+  userState = await res.json()
   if(userState) {
     login_btn.style.display = "none";
     signup_btn.style.display = "none";
@@ -65,7 +65,8 @@ if(res.status === 200) {
     renderFormRequestHandler.Init()
   } else {
     login_btn.style.display = "block";
-    signup_btn.style.display = "block";
+    signup_btn.style.display = "none";
+    // signup_btn.style.display = "block";
     logout_btn.style.display = "none";
   }
 }
@@ -76,7 +77,7 @@ logout_btn.onclick = () => {
     localStorage.removeItem("accessToken")
     await fetchWithAuth("/api/logout")
     login_btn.style.display = "block";
-    signup_btn.style.display = "block";
+    // signup_btn.style.display = "block";
     logout_btn.style.display = "none";
   })
 }
@@ -85,15 +86,33 @@ const HomePage = $(".home_page")
 const NomenotificationPage = $(".notification_page")
 const AllPage = $$(".page")
 
+function checkUserState() {
+  console.log(userState)
+  if(!userState) {
+    popupNotification.Init()
+    popupNotification.Fail("bạn phải đăng nhập mới nhận được thông báo")
+    return false
+  }
+  return true
+}
+
 function HandleChangeMainContent(type) {
-  AllPage.forEach(page => page.classList.remove("active"))
+
   switch(type) {
     case "homePage":
+        AllPage.forEach(page => page.classList.remove("active"))
         HomePage.classList.add("active")
       break
 
     case "notificationPage":
+        if(!checkUserState()) break
+        AllPage.forEach(page => page.classList.remove("active"))
         NomenotificationPage.classList.add("active")
+      break
+
+    case "setting":
+        if(!checkUserState()) break
+        window.location.href = "/public/admin.html"
       break
     
     case "helpPage":
@@ -101,6 +120,7 @@ function HandleChangeMainContent(type) {
       break
 
     default:
+        AllPage.forEach(page => page.classList.remove("active"))
         HomePage.classList.add("active")
       break
   }

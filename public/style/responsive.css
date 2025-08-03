@@ -1,5 +1,9 @@
 /* responsive */
 @media (max-width: 768px) {
+    .navbar_left {
+        opacity: 1;
+    }
+
     .register_box {
         max-width: 600px;
         width: 100%;
@@ -211,6 +215,7 @@
 
     .notification_mobile_item input:checked ~ .notification_mobile_item-list{
         max-height: 600px;
+        overflow: visible;
     }
 
     .notification_mobile_item-item {
