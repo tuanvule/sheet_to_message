@@ -54,6 +54,18 @@ const signup_btn = $(".navbar_btns-signup")
 //   popupNotification.Init()
 //   popupNotification.Fail(data.message)
 // }
+
+const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
+if(!numberOfUnreadMessages) {
+  localStorage.setItem("numberOfUnreadMessages", 1)
+} else {
+  localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 1)
+}
+
+if (navigator.setAppBadge) {
+  // Display the number of unread messages.
+  navigator.setAppBadge(numberOfUnreadMessages+1);
+}
 let userState = null
 const res = await fetchWithAuth("/api/verify_token")
 if(res.status === 200) {
