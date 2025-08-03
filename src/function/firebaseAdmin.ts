@@ -1,9 +1,11 @@
 import * as admin from 'firebase-admin';
+import { firebase } from 'googleapis/build/src/apis/firebase';
 export interface NotificationPayload {
   title: string;
   body: string;
   data?: Record<string, string>; // Optional additional data
   imageUrl?: string; // Optional image URL
+  unreadCount: Number;
 }
 
 export class FirebaseAdminControler {
@@ -53,7 +55,8 @@ export class FirebaseAdminControler {
         const messages = deviceToken.map(token => ({
           notification: {
             title: payload.title,
-            body: payload.body
+            body: payload.body,
+            unreadCount: payload.unreadCount
           },
           token
         }));

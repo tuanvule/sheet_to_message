@@ -22,17 +22,20 @@ messaging.onBackgroundMessage((payload) => {
       body: payload.data.body,
       icon: '/nhh512.png' // Use your icon
     };
-    // const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
-    // if(!numberOfUnreadMessages) {
-    //   localStorage.setItem("numberOfUnreadMessages", 1)
-    // } else {
-    //   localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 1)
-    // }
 
-    // if (navigator.setAppBadge) {
-    //   // Display the number of unread messages.
-    //   navigator.setAppBadge(numberOfUnreadMessages+1);
-    // }
+     if (navigator.setAppBadge) {
+      // Lấy số lượng tin nhắn chưa đọc từ payload hoặc bộ nhớ cục bộ
+      const numberOfUnreadMessages = payload.data.unreadCount;
+      
+      // Cập nhật badge
+      navigator.setAppBadge(numberOfUnreadMessages)
+          .then(() => {
+              console.log('Badge updated successfully.');
+          })
+          .catch((error) => {
+              console.error('Failed to set app badge:', error);
+          });
+    }
 
     self.registration.showNotification(notificationTitle, notificationOptions);
   }
