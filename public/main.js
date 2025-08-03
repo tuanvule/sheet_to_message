@@ -55,18 +55,28 @@ const signup_btn = $(".navbar_btns-signup")
 //   popupNotification.Fail(data.message)
 // }
 
-const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
-if(!numberOfUnreadMessages) {
-  localStorage.setItem("numberOfUnreadMessages", 1)
-} else {
-  localStorage.setItem("numberOfUnreadMessages", Number(numberOfUnreadMessages) + 1)
-}
-// console.log(navigator.setAppBadge)
-// document.querySelector("body").innerHTML += navigator.setAppBadge
-if (navigator.setAppBadge) {
-  // Display the number of unread messages.
-  navigator.setAppBadge(numberOfUnreadMessages ? Number(numberOfUnreadMessages) + 1 : 1);
-}
+// const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
+// if(!numberOfUnreadMessages) {
+//   localStorage.setItem("numberOfUnreadMessages", 1)
+// } else {
+//   localStorage.setItem("numberOfUnreadMessages", Number(numberOfUnreadMessages) + 1)
+// }
+// // console.log(navigator.setAppBadge)
+// // document.querySelector("body").innerHTML += navigator.setAppBadge
+// if (navigator.setAppBadge) {
+//   // Display the number of unread messages.
+//   navigator.setAppBadge(1);
+// }
+
+document.addEventListener('DOMContentLoaded', () => {
+    if ('setAppBadge' in navigator) {
+        navigator.setAppBadge(10)
+            .then(() => console.log('Badge updated successfully!'))
+            .catch(error => console.error('Failed to set badge:', error));
+    } else {
+        console.log('Badging API is not supported on this device/browser.');
+    }
+});
 let userState = null
 const res = await fetchWithAuth("/api/verify_token")
 if(res.status === 200) {
