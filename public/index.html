@@ -409,7 +409,7 @@
             console.log('Notification permission granted.');
             const token = await getToken(messaging,{
                 vapidKey: 'BIkFyecCRIPZhZdynwDFni7NpX9Xm5tmx3rqaMMJhGfx29zcuo0q2qY5OhHCV7mQtS1egWywxXU1sr47gvHDjtg',
-                // serviceWorkerRegistration: await navigator.serviceWorker.register('./firebase-messaging-sw.js')
+                serviceWorkerRegistration: await navigator.serviceWorker.register('./firebase-messaging-sw.js')
             });
             console.log('FCM Token:', token);
 
