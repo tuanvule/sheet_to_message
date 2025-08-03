@@ -34,9 +34,9 @@ const signup_btn = $(".navbar_btns-signup")
   //   body: JSON.stringify(payload),
   // };
 
-  // var response = UrlFetchApp.fetch("https://csvcnhh.namanhishere.me/webhook/NHH", options);
+  // var response = UrlFetchApp.fetch("https://sheet-to-message.vercel.app//webhook/NHH", options);
   // Logger.log(response.getContentText());
-  // var response = fetchWithAuth("/api/webhook/NHH", options);
+  // var response = fetchWithAuth("http://127.0.0.1:3092/api/webhook/NHH", options);
 
 // const response = await fetchWithAuth("/api/get-form-request")
 // const data = await response.json()
@@ -112,7 +112,7 @@ function HandleChangeMainContent(type) {
 
     case "setting":
         if(!checkUserState()) break
-        window.location.href = "/public/admin.html"
+        window.location.href = "/admin"
       break
     
     case "helpPage":

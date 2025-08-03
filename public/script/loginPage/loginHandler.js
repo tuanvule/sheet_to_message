@@ -137,7 +137,7 @@ function handleLogin(event) {
             if(res.status.isSuccess) {
                 localStorage.setItem("accessToken", res.accessToken)
                 alert('Đăng nhập thành công!\nEmail: ' + email);
-                window.location.href = "/public/index.html"
+                window.location.href = "/"
             } else {
                 alert('Đăng nhập chưa thành công!\n Sai email hoặc mật khẩu');
             }
