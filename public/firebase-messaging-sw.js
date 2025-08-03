@@ -22,17 +22,17 @@ messaging.onBackgroundMessage((payload) => {
       body: payload.data.body,
       icon: '/nhh512.png' // Use your icon
     };
-    const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
-    if(!numberOfUnreadMessages) {
-      localStorage.setItem("numberOfUnreadMessages", 1)
-    } else {
-      localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 1)
-    }
+    // const numberOfUnreadMessages = localStorage.getItem("numberOfUnreadMessages")
+    // if(!numberOfUnreadMessages) {
+    //   localStorage.setItem("numberOfUnreadMessages", 1)
+    // } else {
+    //   localStorage.setItem("numberOfUnreadMessages", numberOfUnreadMessages + 1)
+    // }
 
-    if (navigator.setAppBadge) {
-      // Display the number of unread messages.
-      navigator.setAppBadge(numberOfUnreadMessages+1);
-    }
+    // if (navigator.setAppBadge) {
+    //   // Display the number of unread messages.
+    //   navigator.setAppBadge(numberOfUnreadMessages+1);
+    // }
 
     self.registration.showNotification(notificationTitle, notificationOptions);
   }

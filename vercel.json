@@ -6,22 +6,32 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
-          "src/function/**"
+          "src/function/**" 
         ]
       }
     },
     {
-      "src": "public/**", 
+      "src": "public/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
-    
+    {
+      "src": "/",
+      "dest": "src/index.ts"
+    },
+    {
+      "src": "/admin",
+      "dest": "src/index.ts"
+    },
+    {
+      "src": "/login",
+      "dest": "src/index.ts"
+    },
     {
       "src": "/api/(.*)",
       "dest": "src/index.ts"
     },
-    
     {
       "src": "/(.*)",
       "dest": "public/$1"
