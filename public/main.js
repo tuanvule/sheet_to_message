@@ -5,12 +5,23 @@ import { fetchWithAuth } from "./script/uti/func.js";
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
+const renderFormRequestHandler = new RenderFormRequestHandler()
+
+const login_btn = $(".navbar_btns-login")
+const logout_btn = $(".navbar_btns-logout")
+const signup_btn = $(".navbar_btns-signup")
+// console.log(login_btn)
+
+// const renderHandler = new RenderFormRequest();
+// await renderHandler.init();
+// renderHandler.render();
+// console.log(renderHandler.getAll());
 
   // var payload = {
   //   type: "NSP",
   //   info: {
-  //     rowData: [],
-  //     headerData: [],
+  //     rowData: {},
+  //     headerData: {},
   //   },
   //   formId: "NHH_csvc",
   // };
@@ -23,22 +34,9 @@ const $$ = document.querySelectorAll.bind(document)
   //   body: JSON.stringify(payload),
   // };
 
-  // // var response = UrlFetchApp.fetch("https://sheet-to-message.vercel.app//webhook/NHH", options);
-  // // Logger.log(response.getContentText());
+  // var response = UrlFetchApp.fetch("https://sheet-to-message.vercel.app//webhook/NHH", options);
+  // Logger.log(response.getContentText());
   // var response = fetchWithAuth("http://127.0.0.1:3092/api/webhook/NHH", options);
-
-const renderFormRequestHandler = new RenderFormRequestHandler()
-
-const login_btn = $(".navbar_btns-login")
-const logout_btn = $(".navbar_btns-logout")
-const signup_btn = $(".navbar_btns-signup")
-// console.log(login_btn)
-
-const renderHandler = new RenderFormRequest();
-await renderHandler.init();
-renderHandler.render();
-console.log(renderHandler.getAll());
-
 
 // const response = await fetchWithAuth("/api/get-form-request")
 // const data = await response.json()
@@ -57,15 +55,6 @@ console.log(renderHandler.getAll());
 //   popupNotification.Fail(data.message)
 // }
 
-document.addEventListener('DOMContentLoaded', () => {
-    if ('setAppBadge' in navigator) {
-        navigator.setAppBadge(10)
-            .then(() => console.log('Badge updated successfully!'))
-            .catch(error => console.error('Failed to set badge:', error));
-    } else {
-        console.log('Badging API is not supported on this device/browser.');
-    }
-});
 let userState = null
 const res = await fetchWithAuth("/api/verify_token")
 if(res.status === 200) {
