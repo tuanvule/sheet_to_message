@@ -58,14 +58,14 @@ function sendMessage(e) {
 
   if (!scriptProperties.getProperty('STORAGE_CREATED')) {
       try {
-          var createPayload = { header: headers, formId: "NHH_csvc" };
+          var createPayload = { header: headers, formId: "${this.current_form.formId}" };
           var createOptions = {
               method: "post",
               contentType: "application/json",
               payload: JSON.stringify(createPayload),
               muteHttpExceptions: true
           };
-          var createResponse = UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/create_form_config/Rr0qAwaUUYnX7oLjxf6K", createOptions);
+          var createResponse = UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/create_form_config/${this.userData.id}", createOptions);
           Logger.log("Tạo kho lưu trữ: " + createResponse.getContentText());
           scriptProperties.setProperty('STORAGE_CREATED', 'true');
       } catch (err) {
@@ -74,14 +74,14 @@ function sendMessage(e) {
   }
 
   if(e && e.source) {
-    var payload = { info: { rowData: rowData, headerData: headers }, formId: "NHH_csvc" };
+    var payload = { info: { rowData: rowData, headerData: headers }, formId: "${this.current_form.formId}" };
     var options = {
         method: "post",
         contentType: "application/json",
         payload: JSON.stringify(payload),
         muteHttpExceptions: true
     };
-    Logger.log(UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/webhook/NHH", options).getContentText());
+    Logger.log(UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/webhook/${this.userData.userName}", options).getContentText());
   }
 }`
 
