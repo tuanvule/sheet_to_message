@@ -288,7 +288,7 @@ app.get("/api/create_new_form", JWTAuth, async (req,res) => {
   }
 })
 
-app.get("/api/create_form_config/:id", async (req,res) => {
+app.post("/api/create_form_config/:id", async (req,res) => {
   try {
     const id: string = req.params.id;
     let { header, formId } = req.body as any;
