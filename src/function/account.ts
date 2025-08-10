@@ -171,19 +171,19 @@ export class AccountHandler {
         const firebase = FirebaseAdminControler.getInstance()
 
         const user: StoredAccount | null = await firebase.getDocument("User", userId)
-        if (!user) {
+        if(user) {
+            // let data: StoredAccount = user
+            user.forms = user.forms.map(form => {
+                if(form.formId === formId)  {
+                    return {...form, config: {...form.config, sheetHeader: headers} }
+                }
+                return form
+            })
+    
+            await firebase.updateDocument("User", userId, user)
+        } else {
             throw new Error("createForm failed")
         }
-
-        const index = user.forms.findIndex(f => f.formId === formId)
-        if (index === -1) {
-            throw new Error(`Form with ID ${formId} not found`)
-        }
-
-        // Cập nhật đúng field trong mảng
-        await firebase.updateDocument("User", userId, {
-            [`forms.${index}.config.sheetHeader`]: headers
-        })
     }
 
     public async SaveFormConfig(userId: string, formId: string, changeData: object) {

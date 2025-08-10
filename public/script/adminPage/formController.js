@@ -34,7 +34,7 @@ export const formController = {
     },
 
     Render() {
-        if(!this.form_datas) return
+        if(this.form_datas.length === 0) return
         $(".form_list").innerHTML = ""
         this.form_datas.forEach(form_data => this.RenderFormBtn(form_data.formName))
         configMessageController.LoadForm(this.current_form)
