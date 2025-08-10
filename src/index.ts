@@ -280,7 +280,6 @@ app.get("/api/create_new_form", JWTAuth, async (req,res) => {
     try {
       const response = await accountHandler.CreateForm(userState.userId)
       res.json({newForm: response})
-      // throw new Error
     } catch(err) {
       res.status(500).json({message: "international server error"})
     }
@@ -288,6 +287,18 @@ app.get("/api/create_new_form", JWTAuth, async (req,res) => {
     res.status(403).json({message: "user must be owner to do this"})
   }
 })
+
+app.get("/api/create_form_config/:id", async (req,res) => {
+  try {
+    const id: string = req.params.id;
+    let { header, formId } = req.body as any;
+    await accountHandler.CreateFormConfig(header, id, formId)
+    res.status(200).json("success")
+  } catch(err) {
+    res.status(500).json(err)
+  }
+})
+
 
 app.post("/api/save_form_config", JWTAuth, async (req,res) => {
   try {

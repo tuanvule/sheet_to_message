@@ -160,11 +160,30 @@ export class AccountHandler {
                 })
                 return newForm
             } else {
-                throw new Error("cannot create userId")
+                throw new Error("cannot create form")
             }
         } catch(err) {
             throw err
         }
+    }
+
+    public async CreateFormConfig(headers: string[], userId: string, formId: string) {
+        const firebase = FirebaseAdminControler.getInstance()
+
+        const user: StoredAccount | null = await firebase.getDocument("User", userId)
+        if (!user) {
+            throw new Error("createForm failed")
+        }
+
+        const index = user.forms.findIndex(f => f.formId === formId)
+        if (index === -1) {
+            throw new Error(`Form with ID ${formId} not found`)
+        }
+
+        // Cập nhật đúng field trong mảng
+        await firebase.updateDocument("User", userId, {
+            [`forms.${index}.config.sheetHeader`]: headers
+        })
     }
 
     public async SaveFormConfig(userId: string, formId: string, changeData: object) {

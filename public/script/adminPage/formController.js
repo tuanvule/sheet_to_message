@@ -46,25 +46,43 @@ export const formController = {
         app_script_code.removeAttribute('data-highlighted');
         const new_app_script = `
 function sendMessage(e) {
-    var sheet = e.source.getActiveSheet();
-    var lastRow = sheet.getLastRow();
-    var lastColumn = sheet.getLastColumn();
-    var headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-    var rowData = sheet.getRange(lastRow, 1, 1, lastColumn).getValues()[0];
+  var scriptProperties = PropertiesService.getScriptProperties();
+  var sheet = (e && e.source) ? e.source.getActiveSheet() : SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
-    var payload = {
-        info: { rowData: rowData, headerData: headers },
-        formId: "${this.current_form.formId}",
-    };
+  var lastRow = sheet.getLastRow();
+  var lastColumn = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+  var rowData = sheet.getRange(lastRow, 1, 1, lastColumn).getValues()[0];
+  Logger.log(headers);
+  Logger.log(rowData);
 
+  if (!scriptProperties.getProperty('STORAGE_CREATED')) {
+      try {
+          var createPayload = { header: headers, formId: "NHH_csvc" };
+          var createOptions = {
+              method: "post",
+              contentType: "application/json",
+              payload: JSON.stringify(createPayload),
+              muteHttpExceptions: true
+          };
+          var createResponse = UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/create_form_config/Rr0qAwaUUYnX7oLjxf6K", createOptions);
+          Logger.log("Tạo kho lưu trữ: " + createResponse.getContentText());
+          scriptProperties.setProperty('STORAGE_CREATED', 'true');
+      } catch (err) {
+          Logger.log("Lỗi khi tạo kho lưu trữ: " + err);
+      }
+  }
+
+  if(e && e.source) {
+    var payload = { info: { rowData: rowData, headerData: headers }, formId: "NHH_csvc" };
     var options = {
         method: "post",
         contentType: "application/json",
         payload: JSON.stringify(payload),
-        muteHttpExceptions: true,
+        muteHttpExceptions: true
     };
-
-    Logger.log(UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/webhook/${this.userData.userName}", options).getContentText());
+    Logger.log(UrlFetchApp.fetch("https://sheet-to-message.vercel.app/api/webhook/NHH", options).getContentText());
+  }
 }`
 
         app_script_code.innerHTML = new_app_script
