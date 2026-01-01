@@ -8,6 +8,7 @@ export interface Status {
     userId: string,
     role: string,
     userName: string,
+    memberName: string,
 }
 
 interface StoredForm {
@@ -46,7 +47,7 @@ export class AccountHandler {
         return account
     }
 
-    public async LoginAsMember(joinCode: string): Promise<Status> {
+    public async LoginAsMember(joinCode: string, memberName: string): Promise<Status> {
         const firebase = FirebaseAdminControler.getInstance();
         const sessionController = SessionController.GetInstance();
         try {
@@ -55,12 +56,12 @@ export class AccountHandler {
             );
             
             // check if account is not exit
-            if(accounts.length === 0) return { isSuccess: false, userId: "", role: "", userName: ""}
+            if(accounts.length === 0) return { isSuccess: false, userId: "", role: "", userName: "", memberName: ""}
 
             const account: StoredAccount = accounts[0];
             // const sessionId = await sessionController.CreateSession(account.id, "member");
 
-            return { isSuccess: true, userId: account.id, role: "member", userName: account.userName };
+            return { isSuccess: true, userId: account.id, role: "member", userName: account.userName, memberName: memberName };
 
         } catch(err) {
             console.log("login err: ", err);
@@ -78,13 +79,13 @@ export class AccountHandler {
             );
             
             // check if account is not exit
-            if(accounts.length === 0) return { isSuccess: false, userId: "", role: "", userName: ""}
+            if(accounts.length === 0) return { isSuccess: false, userId: "", role: "", userName: "", memberName: ""}
 
             const account: StoredAccount = accounts[0];
 
             // const sessionId = await sessionController.CreateSession(account.id, "admin");
 
-            return { isSuccess: true, userId: account.id, role: "admin", userName: account.userName };
+            return { isSuccess: true, userId: account.id, role: "admin", userName: account.userName, memberName: "" };
         } catch(err) {
             console.log("login err: ", err);
             throw err;

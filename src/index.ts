@@ -193,9 +193,9 @@ app.post('/api/login', async (req,res) => {
 
 app.post('/api/login_as_member', async (req,res) => {
   try {
-    const { joinCode } = req.body;
+    const { joinCode, memberName } = req.body;
     let status:Status;
-    status = await accountHandler.LoginAsMember(joinCode);
+    status = await accountHandler.LoginAsMember(joinCode, memberName);
 
     if(status.isSuccess) {
       const JWT_SECRET = process.env.JWT_SECRET;
