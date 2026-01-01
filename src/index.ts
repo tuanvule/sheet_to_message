@@ -143,12 +143,13 @@ app.post("/api/processing_notify", JWTAuth, async (req,res) => {
   try {
     const userState = res.locals.userState
     if(userState) {
-      const { id_list,action_type} = req.body
+      const { id_list,action_type,note } = req.body
       // await 
+
       if(action_type === "handled") {
-        await formRequestHandler.Processing(id_list)
+        await formRequestHandler.Processing(id_list, userState.role === "member" ? userState.memberName : userState.userName, note)
       } else if(action_type === "delete") {
-        await formRequestHandler.Delete(id_list)
+        await formRequestHandler.ConsiderDeleting(id_list, userState.role === "member" ? userState.memberName : userState.userName, note)
       }
       
       res.status(200).json()
