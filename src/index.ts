@@ -10,10 +10,11 @@ import { error } from "console";
 import { AccountHandler, Status, StoredAccount } from "./function/account";
 import { SessionController, SessionState } from "./function/sesionController";
 import { stat } from "fs";
-import { firebase } from "googleapis/build/src/apis/firebase";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import * as admin from 'firebase-admin';
+const { Filter } = admin.firestore;
 
 dotenv.config();
 
@@ -113,29 +114,88 @@ app.post('/api/webhook/:userName', async (req, res) => {
 
 app.get('/api/get-form-request', JWTAuth, async (req, res) => {
   try {
-    const firebase = FirebaseAdminControler.getInstance()
+    const firebase = FirebaseAdminControler.getInstance();
     const userState = res.locals.userState;
 
-    if(userState.userId) {
-      const userAccount: StoredAccount | null = await firebase.getDocument("User", userState.userId);
-      if(userAccount) {
-        let return_Data:any = {
-          formConfig: userAccount.forms,
-          forms_request: {}
-        }
-
-        for(const {formId, formName} of userAccount.forms) {
-          // const requestData = await firebase.queryDocuments("form_request", ref => ref.where("formId", "==", formId).where("is_handle", "==", false))
-          const requestData = await firebase.queryDocuments("form_request", ref => ref.where("formId", "==", formId).where("is_handled", "==", false))
-          if(requestData.length > 0) {
-            return_Data.forms_request[formName] = requestData;
-          }
-        }
-        res.json(return_Data)
-      }
+    if (!userState?.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-  } catch(err) {
-    res.status(500).json({message: "international error, cannot get form request"})
+
+    const userAccount: StoredAccount | null = await firebase.getDocument("User", userState.userId);
+    
+    if (!userAccount) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let return_Data: any = {
+      formConfig: userAccount.forms,
+      forms_request: {}
+    };
+
+    // Sử dụng Promise.all để truy vấn tất cả các form cùng một lúc
+    await Promise.all(userAccount.forms.map(async ({ formId, formName }) => {
+      // Lấy các request CHƯA xử lý VÀ CHƯA bị đánh dấu xóa
+      const requestData = await firebase.queryDocuments("form_request", ref => 
+        ref.where("formId", "==", formId)
+           .where("is_handled", "==", false)
+           .where("consider_deleting", "==", false) 
+      );
+
+      if (requestData && requestData.length > 0) {
+        return_Data.forms_request[formName] = requestData;
+      }
+    }));
+
+    res.json(return_Data);
+
+  } catch (err) {
+    console.error("Error at get-form-request:", err);
+    res.status(500).json({ message: "Internal server error, cannot get form request" });
+  }
+});
+
+app.get('/api/get-handled-request', JWTAuth, async (req, res) => {
+  try {
+    const firebase = FirebaseAdminControler.getInstance();
+    const userState = res.locals.userState;
+
+    if (!userState?.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const userAccount: StoredAccount | null = await firebase.getDocument("User", userState.userId);
+    
+    if (!userAccount) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let return_Data: any = {
+      formConfig: userAccount.forms,
+      forms_request: {}
+    };
+
+    // Sử dụng Promise.all để các vòng lặp query chạy song song, nhanh hơn nhiều so với await từng cái
+    await Promise.all(userAccount.forms.map(async ({ formId, formName }) => {
+      const requestData = await firebase.queryDocuments("form_request", ref => 
+        ref.where("formId", "==", formId)
+           .where(
+             Filter.or(
+               Filter.where("is_handled", "==", true),
+               Filter.where("consider_deleting", "==", true)
+             )
+           )
+      );
+
+      if (requestData && requestData.length > 0) {
+        return_Data.forms_request[formName] = requestData;
+      }
+    }));
+
+    res.json(return_Data);
+
+  } catch (err) {
+    console.error("Error at get-handled-request:", err);
+    res.status(500).json({ message: "Internal server error, cannot get form request" });
   }
 });
 
