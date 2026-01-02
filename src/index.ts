@@ -315,7 +315,7 @@ app.post('/api/login_as_member', async (req,res) => {
         sameSite: "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000
       });
-      res.json({status, accessToken: accessToken})
+      res.json({status, accessToken: accessToken, refreshToken: refreshToken})
     }
   }
   catch(err) {
