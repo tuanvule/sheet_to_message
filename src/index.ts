@@ -203,7 +203,7 @@ app.post("/api/processing_notify", JWTAuth, async (req,res) => {
       if(action_type === "handled") {
         await formRequestHandler.Processing(id_list, userState.role === "member" ? userState.memberName : userState.userName, note)
       } else if(action_type === "delete") {
-        await formRequestHandler.ConsiderDeleting(id_list, userState.role === "member" ? userState.memberName : userState.userName, note)
+        await formRequestHandler.Delete(id_list)
       }
       
       res.status(200).json()
@@ -213,6 +213,56 @@ app.post("/api/processing_notify", JWTAuth, async (req,res) => {
   } catch(err) {
     console.error(err)
     res.status(500).json({message: "internationcal error"})
+  }
+})
+
+
+// Lưu ý: Route này KHÔNG được bọc bởi Middleware xác thực (JWTAuth) 
+// vì nó được gọi khi Access Token đã hết hạn.
+app.post('/refresh_token', async (req, res) => {
+  try {
+    // 1. Lấy refreshToken từ body (Mobile gửi lên thủ công)
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Không tìm thấy Refresh Token" });
+    }
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const REFRESH_SECRET = process.env.REFRESH_SECRET;
+    if(!(JWT_SECRET && REFRESH_SECRET)) throw new Error("JWT_SECRET is not defined in environment variables.");
+    // 2. Xác thực Refresh Token
+    jwt.verify(refreshToken, REFRESH_SECRET, (err: any, decoded: any) => {
+      if (err) {
+        // Token hết hạn hoặc không hợp lệ -> Yêu cầu login lại
+        return res.status(403).json({ message: "Refresh Token không hợp lệ hoặc đã hết hạn" });
+      }
+
+      const { isSuccess, userId, role, userName, memberName } = decoded
+
+      // 3. Tạo Access Token mới (thời hạn ngắn, ví dụ 15 phút)
+      const accessToken = jwt.sign(
+        { isSuccess, userId, role, userName, memberName },
+        JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      // 4. (Tùy chọn nhưng nên có) Tạo Refresh Token mới - Rotation
+      // const newRefreshToken = jwt.sign(
+      //   { userId: decoded.userId, role: decoded.role },
+      //   REFRESH_SECRET,
+      //   { expiresIn: '7d' } // Refresh token dài hạn (7 ngày)
+      // );
+
+      // 5. Trả về cho Mobile
+      return res.json({
+        accessToken,
+        // refreshToken: newRefreshToken 
+      });
+    });
+
+  } catch (error) {
+    console.error("Lỗi Refresh Token:", error);
+    res.status(500).json({ message: "Lỗi hệ thống" });
   }
 })
 
