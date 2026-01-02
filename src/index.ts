@@ -138,7 +138,7 @@ app.get('/api/get-form-request', JWTAuth, async (req, res) => {
       const requestData = await firebase.queryDocuments("form_request", ref => 
         ref.where("formId", "==", formId)
            .where("is_handled", "==", false)
-           .where("consider_deleting", "==", false) 
+           .where("is_deleting", "==", false) 
       );
 
       if (requestData && requestData.length > 0) {
@@ -181,7 +181,7 @@ app.get('/api/get-handled-request', JWTAuth, async (req, res) => {
            .where(
              Filter.or(
                Filter.where("is_handled", "==", true),
-               Filter.where("consider_deleting", "==", true)
+               Filter.where("is_deleting", "==", true)
              )
            )
       );
