@@ -71,7 +71,7 @@ app.get('/api/', (req, res) => {
 });
 
 app.post('/api/register-token', JWTAuth, async (req, res) => {
-    const { token } = req.body;
+    const { token, type } = req.body;
     // fdb.collection("client_token").add({token: token})
 
     const userState = res.locals.userState
@@ -80,14 +80,14 @@ app.post('/api/register-token', JWTAuth, async (req, res) => {
       // firebase.createDocument("client_token",{token})
       await firebase.createDocumentIfNotExists("client_token",{
         token,
-        userName: userState.userName
+        userName: userState.userName,
+        type: type
       },"token");
       res.json({ message: 'Token registered successfully' });
     } else {
       res.status(403).json({message: "you need login a join with another user"})
     }
 });
-
 
 app.get('/api/get-list-token', async (req, res) => {
     let firebase = FirebaseAdminControler.getInstance()

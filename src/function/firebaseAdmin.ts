@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin';
-import { firebase } from 'googleapis/build/src/apis/firebase';
 export interface NotificationPayload {
   title: string;
   body: string;

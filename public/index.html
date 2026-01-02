@@ -340,7 +340,7 @@
                 Authorization: `Bearer ${accessToken}`,
                 credentials: "include",
             },
-            body: JSON.stringify({ token })
+            body: JSON.stringify({ token, type: "firebase" })
         });
         console.log(response)
         if(response.status === 403) {
