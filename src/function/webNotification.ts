@@ -3,7 +3,9 @@ import { FirebaseAdminControler, NotificationPayload } from "./firebaseAdmin";
 // import * as admin from 'firebase-admin';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
-const expo = new Expo();
+const expo = new Expo({
+  accessToken: process.env.EXPO_ACCESS_TOKEN,
+});
 
 export class WebNotification extends Subscriber {
 
@@ -41,6 +43,7 @@ export class WebNotification extends Subscriber {
                 body: content.body,
                 data: { unreadCount }, 
                 priority: 'high',
+                channelId: 'default',
             }));
 
         // 4. Gửi qua Expo SDK
