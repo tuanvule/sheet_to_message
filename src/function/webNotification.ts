@@ -1,6 +1,6 @@
 import { Subscriber } from "./abstract";
 import { FirebaseAdminControler, NotificationPayload } from "./firebaseAdmin";
-import * as admin from 'firebase-admin';
+// import * as admin from 'firebase-admin';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
 const expo = new Expo();
