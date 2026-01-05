@@ -266,7 +266,7 @@ export class FirebaseAdminControler {
       }
 
       const snapshot = await query.get();
-
+      console.log(snapshot)
       if (snapshot.empty) {
         return [];
       }
