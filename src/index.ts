@@ -15,6 +15,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import * as admin from 'firebase-admin';
 import { WebNotification } from "./function/webNotification";
+import { PushMessaging } from "./function/pushMessaging";
 const { Filter } = admin.firestore;
 
 dotenv.config();
@@ -37,7 +38,7 @@ const formRequestHandler: FormRequestHandler = new FormRequestHandler();
 const securityCheck = new SecurityCheck();
 const accountHandler = new AccountHandler();
 const sessionController = new SessionController();
-const webNotification = new WebNotification()
+const pushMessaing = new PushMessaging()
 
 const JWTAuth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -110,7 +111,7 @@ app.post('/api/webhook/:userName', async (req, res) => {
     let firebase = FirebaseAdminControler.getInstance()
     await firebase.createDocument("form_request", {submitData: info, userName, formId, is_handled: false, is_deleting: false, history: []})
 
-    webNotification.update({title:`Có báo cáo từ học sinh`,body:``}, userName)
+    pushMessaing.update({title:`Có báo cáo từ học sinh`,body:``}, userName)
     console.log(console.log("webhook ....."))
     res.send("ok");
   } catch(err) {
