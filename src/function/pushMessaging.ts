@@ -30,7 +30,7 @@ export class PushMessaging {
         const expo_token = tokenCollection.filter(item => item.type === "expo").map(item => item.token);
 
         // 2. Lấy số lượng tin chưa đọc (Nên dùng count() nếu có thể)
-        const unreadDocs = await firebase.queryDocuments("form_request", ref => ref.where("userName", "==", userName).where("is_handled", "==", true));
+        const unreadDocs = await firebase.queryDocuments("form_request", ref => ref.where("userName", "==", userName).where("is_handled", "==", false));
         console.log("unreadCount: "+`${unreadDocs.length}` + userName)
         const unreadCount = unreadDocs?.length || 0;
 
