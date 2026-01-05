@@ -52,7 +52,7 @@ export class PushMessaging {
             for (let chunk of chunks) {
                 try {
                     const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                    
+                    console.log("sendNotification ........")
                     // Tạo một mảng chứa các Promise xóa token để chạy song song
                     const deletePromises = [];
 
@@ -92,7 +92,6 @@ export class PushMessaging {
                 unreadCount: unreadCount
             };
             await firebase.sendNotification(payload, firebase_token);
-            console.log("sendNotification ........")
         }
     }
 }

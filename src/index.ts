@@ -111,7 +111,7 @@ app.post('/api/webhook/:userName', async (req, res) => {
     let firebase = FirebaseAdminControler.getInstance()
     await firebase.createDocument("form_request", {submitData: info, userName, formId, is_handled: false, is_deleting: false, history: []})
 
-    pushMessaing.update({title:`Có báo cáo từ học sinh`,body:``}, userName)
+    await pushMessaing.update({title:`Có báo cáo từ học sinh`,body:``}, userName)
     console.log(console.log("webhook ....."))
     res.send("ok");
   } catch(err) {
