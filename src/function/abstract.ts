@@ -11,7 +11,7 @@ export class Publisher {
     removeSubscriber(subscriber: Subscriber): void {
         this.subscribers = this.subscribers.filter(sub => sub !== subscriber);
     }
-    public notifySubscribers(data: any, userName: string): void {
+    public async notifySubscribers(data: any, userName: string) {
         for (const subscriber of this.subscribers) {
             subscriber.update(data, userName);
         }
