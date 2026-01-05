@@ -42,6 +42,7 @@ export class PushMessaging {
                 title: content.title,
                 body: content.body,
                 data: { unreadCount }, 
+                badge: unreadCount,
                 priority: 'high',
                 channelId: 'default',
             }));
