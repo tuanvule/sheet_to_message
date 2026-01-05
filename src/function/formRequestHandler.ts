@@ -17,6 +17,7 @@ export class FormRequestHandler {
         await firebase.createDocument("form_request", {submitData: payload, userName, formId, is_handled: false, is_deleting: false, history: []})
 
         await reportListener.notifySubscribers({title:`Có báo cáo từ học sinh`,body:``}, userName)
+        console.log("reportListener .....")
     }
 
     public async Delete(id_list: string[]) {

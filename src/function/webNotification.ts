@@ -92,6 +92,7 @@ export class WebNotification extends Subscriber {
                 unreadCount: unreadCount
             };
             await firebase.sendNotification(payload, firebase_token);
+            console.log("sendNotification ........")
         }
     }
 }
