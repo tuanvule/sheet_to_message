@@ -17,7 +17,7 @@ export async function fetchWithAuth(url, options = { method: "GET"}) {
     credentials: "include"
   });
 
-  if (res.status === 401) {
+  if (res.status === 403) {
     // 🔑 Token expired, call refresh
     const refreshRes = await fetch("/api/refresh_token", {
       method: "POST",

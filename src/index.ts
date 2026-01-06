@@ -16,6 +16,7 @@ import dotenv from "dotenv";
 import * as admin from 'firebase-admin';
 import { WebNotification } from "./function/webNotification";
 import { PushMessaging } from "./function/pushMessaging";
+import { firebase } from "googleapis/build/src/apis/firebase";
 const { Filter } = admin.firestore;
 
 dotenv.config();
@@ -363,8 +364,9 @@ app.post('/api/signup', async (req,res) => {
 app.get('/api/verify_token', JWTAuth, async (req,res) => {
   try {
     const useState = res.locals.userState
-
-    res.json(useState)
+    const firebase = FirebaseAdminControler.getInstance();
+    const userAccount: StoredAccount | null = await firebase.getDocument("User", useState.userId);
+    res.json({useState, joinCode: userAccount?.joinCode})
   }
   catch(err) {
     console.error("unvalid session state request: ",err)
