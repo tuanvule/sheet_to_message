@@ -232,6 +232,7 @@ app.post('/refresh_token', async (req, res) => {
   try {
     // 1. Lấy refreshToken từ body (Mobile gửi lên thủ công)
     const { refreshToken } = req.body;
+    console.log("refreshToken: " + refreshToken)
 
     if (!refreshToken) {
       return res.status(401).json({ message: "Không tìm thấy Refresh Token" });
@@ -243,6 +244,7 @@ app.post('/refresh_token', async (req, res) => {
     jwt.verify(refreshToken, REFRESH_SECRET, (err: any, decoded: any) => {
       if (err) {
         // Token hết hạn hoặc không hợp lệ -> Yêu cầu login lại
+        console.log("Refresh Token không hợp lệ hoặc đã hết hạn")
         return res.status(403).json({ message: "Refresh Token không hợp lệ hoặc đã hết hạn" });
       }
 
@@ -254,6 +256,7 @@ app.post('/refresh_token', async (req, res) => {
         JWT_SECRET,
         { expiresIn: "1d" }
       );
+      console.log("accessToken mới: " + accessToken)
 
       // 4. (Tùy chọn nhưng nên có) Tạo Refresh Token mới - Rotation
       // const newRefreshToken = jwt.sign(
