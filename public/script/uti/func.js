@@ -16,29 +16,39 @@ export async function fetchWithAuth(url, options = { method: "GET"}) {
     },
     credentials: "include"
   });
-
+  console.log(res)
   if (res.status === 403) {
     // 🔑 Token expired, call refresh
     const refreshRes = await fetch("/api/refresh_token", {
       method: "POST",
-      credentials: "include"
+      credentials: "include",
     });
-    const refreshData = await refreshRes.json();
-    accessToken = refreshData.accessToken;
-    localStorage.setItem("accessToken", accessToken)
-
-    // Retry original request with new token
-    res = await fetch(url, {
-      ...options,
-      headers: {
-        ...(options.headers || {}),
-        Authorization: `Bearer ${accessToken}`
-      },
-      credentials: "include"
-    });
+    if(res.status === 200) {
+      const refreshData = await refreshRes.json();
+      console.log(refreshData)
+      const newAccessToken = refreshData.accessToken;
+      localStorage.setItem("accessToken", newAccessToken)
+  
+      // Retry original request with new token
+      res = await fetch(url, {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          Authorization: `Bearer ${newAccessToken}`
+        },
+        credentials: "include"
+      });
+      console.log(res)
+      return res;
+    } else {
+      console.log("hello")
+      window.location.replace("/login")
+    }
   }
-
-  return res;
+  else {
+      console.log("hello")
+      window.location.replace("/login")
+  }
 }
 
 export function TimeAgoUTC(inputDateStr) {

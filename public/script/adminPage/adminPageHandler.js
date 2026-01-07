@@ -18,6 +18,7 @@ export class AdminPageHandler {
     async start() {
         try {
             const res = await fetchWithAuth("/api/get_account")
+            console.log(res)
             if(res.status === 403) {
                 popupNotification.Init()
                 popupNotification.Fail("Bạn phải là chủ tài khoản mới được sử dụng trang này")

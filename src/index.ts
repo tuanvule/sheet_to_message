@@ -229,13 +229,14 @@ app.post("/api/processing_notify", JWTAuth, async (req,res) => {
 
 // Lưu ý: Route này KHÔNG được bọc bởi Middleware xác thực (JWTAuth) 
 // vì nó được gọi khi Access Token đã hết hạn.
-app.post('/refresh_token', async (req, res) => {
+app.post('/api/refresh_token', async (req, res) => {
   try {
     // 1. Lấy refreshToken từ body (Mobile gửi lên thủ công)
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
     console.log("refreshToken: " + refreshToken)
 
     if (!refreshToken) {
+      console.log("ko thấy")
       return res.status(401).json({ message: "Không tìm thấy Refresh Token" });
     }
     const JWT_SECRET = process.env.JWT_SECRET;
