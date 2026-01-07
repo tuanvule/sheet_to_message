@@ -45,10 +45,6 @@ export async function fetchWithAuth(url, options = { method: "GET"}) {
       window.location.replace("/login")
     }
   }
-  else {
-      console.log("hello")
-      window.location.replace("/login")
-  }
 }
 
 export function TimeAgoUTC(inputDateStr) {
