@@ -32,6 +32,7 @@ export class PushMessaging {
         // 2. Lấy số lượng tin chưa đọc (Nên dùng count() nếu có thể)
         const unreadDocs = await firebase.queryDocuments("form_request", ref => ref.where("userName", "==", userName).where("is_handled", "==", false));
         const unreadCount = unreadDocs?.length || 0;
+        console.log("unreadCount:" + `${unreadCount}`);
 
         // 3. Chuẩn bị tin nhắn cho Expo
         const messages: ExpoPushMessage[] = expo_token
