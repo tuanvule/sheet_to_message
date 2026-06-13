@@ -21,8 +21,7 @@ const { Filter } = admin.firestore;
 
 dotenv.config();
 
-
-const keyPath = path.resolve(__dirname, '../key.json');
+const key = process.env.FIREBASE_CONFIG_JSON ? JSON.parse(process.env.FIREBASE_CONFIG_JSON) : null;
 const app = express();
 const PORT = process.env.PORT || 3092;
 
@@ -440,52 +439,57 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Initialize services and start server
 (async () => {
   try {
-    // Initialize Sheet Controller
-    let sheetController = SheetController.getInstance();
-    await sheetController.initialize({
-      keyFile: "key.json",
-      sheetID: "18TVGscW2Syp7fkB_uYE8Tx_GirQVGmaaj6hZ7-MCMH4"
-    });
-    console.log("Sheet controller initialized");
-
-    // let sheetData = await sheetController.getRawData("test");
-    // console.log(sheetData)
+    
     // Initialize Firebase Admin Controller
     let firebase = FirebaseAdminControler.getInstance();
-    await firebase.initialize(keyPath);
+    await firebase.initialize(key);
 
     console.log("Firebase controller initialized");
-
-//     const emailService = EmailServices.getInstance();
-//     emailService.initialize({
-//       service: 'Hotmail',
-//       user: '',
-//       password: '' // Use app password for Gmail
-//     });
-
-//     // Send an email
-//     async function sendWelcomeEmail(userEmail: string, userName: string) {
-//       try {
-//         await emailService.sendEmail({
-//           to: userEmail,
-//           subject: 'Welcome to Our Service',
-//           text: `Hello ${userName}, welcome to our service!`,
-//           html: `<h1>Welcome ${userName}!</h1><p>We're glad to have you with us.</p>`
-//         });
-//         console.log('Welcome email sent successfully');
-//       } catch (error) {
-//         console.error('Failed to send welcome email:', error);
-//       }
-//     }
-
-// // Usage example
-// sendWelcomeEmail('A@A.A', 'A');
 
 
     // Start the Express server
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT} \n 127.0.0.1:${PORT}`);
     });
+
+    //     /****bỏ qua****/
+
+    // Initialize Sheet Controller 
+    // let sheetController = SheetController.getInstance();
+    // await sheetController.initialize({
+    //   keyFile: "key.json",
+    //   sheetID: "18TVGscW2Syp7fkB_uYE8Tx_GirQVGmaaj6hZ7-MCMH4"
+    // });
+    // console.log("Sheet controller initialized");
+
+    // let sheetData = await sheetController.getRawData("test");
+    // console.log(sheetData)
+
+    //     const emailService = EmailServices.getInstance();
+    //     emailService.initialize({
+    //       service: 'Hotmail',
+    //       user: '',
+    //       password: '' // Use app password for Gmail
+    //     });
+
+    //     // Send an email
+    //     async function sendWelcomeEmail(userEmail: string, userName: string) {
+    //       try {
+    //         await emailService.sendEmail({
+    //           to: userEmail,
+    //           subject: 'Welcome to Our Service',
+    //           text: `Hello ${userName}, welcome to our service!`,
+    //           html: `<h1>Welcome ${userName}!</h1><p>We're glad to have you with us.</p>`
+    //         });
+    //         console.log('Welcome email sent successfully');
+    //       } catch (error) {
+    //         console.error('Failed to send welcome email:', error);
+    //       }
+    //     }
+
+    // // Usage example
+    // sendWelcomeEmail('A@A.A', 'A');
+
   } catch (error) {
     console.error('Initialization error:', error);
     process.exit(1);

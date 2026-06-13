@@ -3,3 +3,4 @@
 *.env
 /dist
 /vercel.json
+/key.json

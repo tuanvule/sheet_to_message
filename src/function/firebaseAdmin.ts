@@ -27,15 +27,15 @@ export class FirebaseAdminControler {
     }
   }
 
-  public async initialize(key: string): Promise<void> {
+  public async initialize(key: any): Promise<void> {
     if (this.initialized) return; // Already initialized
 
     if (!key) throw new Error("Missing config for Firebase Controller initialization");
 
     try {
-      const serviceAccount = require(key);
+      // const serviceAccount = require(key);
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
+        credential: admin.credential.cert(key)
       });
 
       this.db = admin.firestore();
