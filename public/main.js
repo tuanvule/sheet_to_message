@@ -11,36 +11,6 @@ const login_btn = $(".navbar_btns-login")
 const logout_btn = $(".navbar_btns-logout")
 const signup_btn = $(".navbar_btns-signup")
 
-async function resetFCMToken() {
-  if ('serviceWorker' in navigator) {
-    try {
-      // 1. Lấy tất cả Service Worker đang chạy ngầm trên điện thoại
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      for (let registration of registrations) {
-        // Hủy đăng ký để xóa sạch cấu hình cũ kẹt trong cache
-        await registration.unregister();
-        console.log('Đã xóa thành công Service Worker cũ kẹt cache');
-      }
-
-      // 2. Xóa triệt để các token cũ lưu trong IndexedDB của Firebase
-      const dbs = await window.indexedDB.databases();
-      dbs.forEach(db => {
-        if (db.name && db.name.includes('firebase')) {
-          window.indexedDB.deleteDatabase(db.name);
-          console.log(`Đã xóa DB kẹt: ${db.name}`);
-        }
-      });
-
-      console.log('Đã dọn sạch! Hãy reload lại trang để nhận Token mới tinh.');
-    } catch (error) {
-      console.error('Lỗi khi dọn dẹp bộ nhớ: ', error);
-    }
-  }
-}
-
-// Bật dòng này lên chạy ĐÚNG 1 LẦN trên điện thoại, sau đó ẩn/xóa dòng này đi
-resetFCMToken();
-
 // console.log(login_btn)
 
 // const renderHandler = new RenderFormRequest();
@@ -167,3 +137,39 @@ sidebar_menu_items.forEach(ele => {
     HandleChangeMainContent(ele.dataset.pagetype)
   }
 })
+
+
+
+
+
+// reset FCMToken() is a function that clears all old Service Workers and IndexedDB databases related to Firebase, allowing the app to receive a new FCM token. This is useful for resolving issues with stuck or outdated tokens. The function should be run once on the device, and then the page should be reloaded to obtain a fresh token.
+
+// async function resetFCMToken() {
+//   if ('serviceWorker' in navigator) {
+//     try {
+//       // 1. Lấy tất cả Service Worker đang chạy ngầm trên điện thoại
+//       const registrations = await navigator.serviceWorker.getRegistrations();
+//       for (let registration of registrations) {
+//         // Hủy đăng ký để xóa sạch cấu hình cũ kẹt trong cache
+//         await registration.unregister();
+//         console.log('Đã xóa thành công Service Worker cũ kẹt cache');
+//       }
+
+//       // 2. Xóa triệt để các token cũ lưu trong IndexedDB của Firebase
+//       const dbs = await window.indexedDB.databases();
+//       dbs.forEach(db => {
+//         if (db.name && db.name.includes('firebase')) {
+//           window.indexedDB.deleteDatabase(db.name);
+//           console.log(`Đã xóa DB kẹt: ${db.name}`);
+//         }
+//       });
+
+//       console.log('Đã dọn sạch! Hãy reload lại trang để nhận Token mới tinh.');
+//     } catch (error) {
+//       console.error('Lỗi khi dọn dẹp bộ nhớ: ', error);
+//     }
+//   }
+// }
+
+// // Bật dòng này lên chạy ĐÚNG 1 LẦN trên điện thoại, sau đó ẩn/xóa dòng này đi
+// resetFCMToken();
