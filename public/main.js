@@ -55,7 +55,7 @@ const signup_btn = $(".navbar_btns-signup")
 //   popupNotification.Init()
 //   popupNotification.Fail(data.message)
 // }
-navigator.setAppBadge(10);
+// navigator.setAppBadge(10);
 let userState = null
 const res = await fetchWithAuth("/api/verify_token")
 if(res.status === 200) {

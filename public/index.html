@@ -408,7 +408,8 @@
            
             console.log('Notification permission granted.');
             const token = await getToken(messaging,{
-                vapidKey: 'BIkFyecCRIPZhZdynwDFni7NpX9Xm5tmx3rqaMMJhGfx29zcuo0q2qY5OhHCV7mQtS1egWywxXU1sr47gvHDjtg',
+                // vapidKey: 'BIkFyecCRIPZhZdynwDFni7NpX9Xm5tmx3rqaMMJhGfx29zcuo0q2qY5OhHCV7mQtS1egWywxXU1sr47gvHDjtg',
+                vapidKey: 'BH9ouLpd1zch1a9LO9sWZDrTDQXmUbusr79UGPK_Wkvd21ERtYFNK17xSMVTm3-tZPI5X7mshLpiXS8aiWQtugw',
                 // serviceWorkerRegistration: await navigator.serviceWorker.register('./firebase-messaging-sw.js')
             });
             console.log('FCM Token:', token);
