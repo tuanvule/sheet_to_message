@@ -113,7 +113,7 @@ app.post('/api/webhook/:userName', async (req, res) => {
     await firebase.createDocument("form_request", {submitData: info, userName, formId, is_handled: false, is_deleting: false, history: []})
 
     await pushMessaing.update({title:`Có báo cáo từ học sinh`,body:``}, userName)
-    console.log(console.log("webhook ....."))
+    console.log("webhook .....")
     res.send("ok");
   } catch(err) {
     console.error("webhook request form unknow: ", err);
@@ -353,6 +353,7 @@ app.post('/api/signup', async (req,res) => {
     status = await accountHandler.LoginAsAdmin(userName, password);
 
     await accountHandler.CreateAccount(userName, email, password)
+    res.json({status})
   }
   catch(err) {
     console.error("unvalid login request: ",err)
@@ -439,7 +440,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Initialize services and start server
 (async () => {
   try {
-    
+    console.log("Danh sách các biến môi trường hiện tại:", Object.keys(process.env));
     // Initialize Firebase Admin Controller
     let firebase = FirebaseAdminControler.getInstance();
     await firebase.initialize(key);

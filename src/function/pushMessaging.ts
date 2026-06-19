@@ -47,9 +47,8 @@ export class PushMessaging {
                 priority: 'high',
                 channelId: 'default',
             }));
-
         // 4. Gửi qua Expo SDK
-        if (messages.length > 0) {
+        if (messages.length > 0 && expo_token.length > 0) {
             const chunks = expo.chunkPushNotifications(messages);
             for (let chunk of chunks) {
                 try {
