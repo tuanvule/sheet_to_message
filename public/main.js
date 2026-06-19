@@ -10,6 +10,37 @@ const renderFormRequestHandler = new RenderFormRequestHandler()
 const login_btn = $(".navbar_btns-login")
 const logout_btn = $(".navbar_btns-logout")
 const signup_btn = $(".navbar_btns-signup")
+
+async function resetFCMToken() {
+  if ('serviceWorker' in navigator) {
+    try {
+      // 1. Lấy tất cả Service Worker đang chạy ngầm trên điện thoại
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (let registration of registrations) {
+        // Hủy đăng ký để xóa sạch cấu hình cũ kẹt trong cache
+        await registration.unregister();
+        console.log('Đã xóa thành công Service Worker cũ kẹt cache');
+      }
+
+      // 2. Xóa triệt để các token cũ lưu trong IndexedDB của Firebase
+      const dbs = await window.indexedDB.databases();
+      dbs.forEach(db => {
+        if (db.name && db.name.includes('firebase')) {
+          window.indexedDB.deleteDatabase(db.name);
+          console.log(`Đã xóa DB kẹt: ${db.name}`);
+        }
+      });
+
+      console.log('Đã dọn sạch! Hãy reload lại trang để nhận Token mới tinh.');
+    } catch (error) {
+      console.error('Lỗi khi dọn dẹp bộ nhớ: ', error);
+    }
+  }
+}
+
+// Bật dòng này lên chạy ĐÚNG 1 LẦN trên điện thoại, sau đó ẩn/xóa dòng này đi
+resetFCMToken();
+
 // console.log(login_btn)
 
 // const renderHandler = new RenderFormRequest();
