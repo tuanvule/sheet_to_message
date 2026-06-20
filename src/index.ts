@@ -440,7 +440,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Initialize services and start server
 (async () => {
   try {
-    console.log("Danh sách các biến môi trường hiện tại:", Object.keys(process.env));
+    // console.log("Danh sách các biến môi trường hiện tại:", Object.keys(process.env));
     // Initialize Firebase Admin Controller
     let firebase = FirebaseAdminControler.getInstance();
     await firebase.initialize(key);

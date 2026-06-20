@@ -198,7 +198,7 @@ export class AccountHandler {
                     }
                     return item;
                 });
-                console.log(JSON.stringify(updateForm, null, 2));
+                // console.log(JSON.stringify(updateForm, null, 2));
                 await firebase.updateDocument("User", userId, {
                     forms: updateForm
                 })

@@ -19,12 +19,11 @@ const signup_btn = $(".navbar_btns-signup")
 // console.log(renderHandler.getAll());
 
   // var payload = {
-  //   type: "NSP",
   //   info: {
   //     rowData: {},
   //     headerData: {},
   //   },
-  //   formId: "NHH_csvc",
+  //   formId: "NHHForm_1",
   // };
 
   // var options = {
@@ -35,9 +34,9 @@ const signup_btn = $(".navbar_btns-signup")
   //   body: JSON.stringify(payload),
   // };
 
-  // var response = UrlFetchApp.fetch("https://sheet-to-message.vercel.app//webhook/NHH", options);
-  // Logger.log(response.getContentText());
+  // // var response = UrlFetchApp.fetch("https://sheet-to-message.vercel.app//webhook/NHH", options);
   // var response = fetchWithAuth("http://127.0.0.1:3092/api/webhook/NHH", options);
+  // console.log(response);
 
 // const response = await fetchWithAuth("/api/get-form-request")
 // const data = await response.json()
